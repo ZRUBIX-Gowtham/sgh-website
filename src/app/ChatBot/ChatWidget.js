@@ -1,0 +1,909 @@
+// ChatWidget.jsx
+"use client";
+
+import React from "react";
+
+/* Simple bubbles */
+function SystemMessage({ text }) {
+  return (
+    <div style={{ fontSize: 12, color: "#334155", background: "#e2e8f0", padding: "6px 10px", borderRadius: 8, marginBottom: 10, width: "fit-content", maxWidth: "85%" }}>
+      {text}
+    </div>
+  );
+}
+
+// New component for displaying and confirming details
+function DetailsConfirmationCard({ data, onConfirm, onEdit, isEditing, onFieldChange, currentEditField, t }) {
+  const fields = [
+    { label: t.name, key: 'name', type: 'text' },
+    { label: t.email, key: 'email', type: 'email' },
+    { label: t.phone, key: 'phone', type: 'tel' },
+  ];
+
+  return (
+    <div style={{ border: "1px solid #e5e7eb", background: "#ffffff", borderRadius: 12, padding: 12, color: "#0f172a", marginBottom: 12 }}>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.reviewYourDetails}</div>
+      <div style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 10 }}>
+        {fields.map(field => (
+          <div key={field.key} style={{ marginBottom: 5, display: "flex", alignItems: "center" }}>
+            <strong style={{ minWidth: 60 }}>{field.label}:</strong>{" "}
+            {isEditing && currentEditField === field.key ? (
+              <input
+                type={field.type}
+                value={data[field.key] || ''}
+                onChange={(e) => onFieldChange(field.key, e.target.value)}
+                style={{ flex: 1, padding: "4px 6px", borderRadius: 4, border: "1px solid #ccc", fontSize: 13 }}
+              />
+            ) : (
+              <span style={{ flex: 1 }}>{data[field.key] || "-"}</span>
+            )}
+            {(!isEditing || currentEditField !== field.key) && (
+              <button
+                onClick={() => onEdit(field.key)}
+                style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", marginLeft: 5, fontSize: 12 }}
+              >
+                {t.edit}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button
+          onClick={onConfirm}
+          style={{
+            background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            padding: "8px 12px",
+            cursor: "pointer",
+            fontSize: 14,
+          }}
+        >
+          {t.confirmData}
+        </button>
+        {isEditing && currentEditField && (
+          <button
+            onClick={() => onEdit(null)} // Cancel editing
+            style={{
+              border: "1px solid #e5e7eb",
+              background: "#fff",
+              color: "#0f172a",
+              padding: "8px 12px",
+              borderRadius: 10,
+              cursor: "pointer",
+              fontSize: 14,
+            }}
+          >
+            {t.cancelEdit}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+function BotMessage({ text, type, details, onConfirmDetails, onEditDetails, isEditingDetails, onFieldChangeDetails, currentEditFieldDetails, t }) {
+  if (type === 'details_request' && details) {
+    return (
+      <div style={{ display: "flex", marginBottom: 10, gap: 8, alignItems: "flex-start" }}>
+        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#1d4ed8", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flex: "0 0 auto" }}>
+          B
+        </div>
+        <DetailsConfirmationCard
+          data={details}
+          onConfirm={onConfirmDetails}
+          onEdit={onEditDetails}
+          isEditing={isEditingDetails}
+          onFieldChange={onFieldChangeDetails}
+          currentEditField={currentEditFieldDetails}
+          t={t}
+        />
+      </div>
+    );
+  }
+  return (
+    <div style={{ display: "flex", marginBottom: 10, gap: 8, alignItems: "flex-start" }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#1d4ed8", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flex: "0 0 auto" }}>
+        B
+      </div>
+      <div style={{ background: "#ffffff", border: "1px solid #e5e7eb", padding: "8px 12px", borderRadius: 12, color: "#0f172a", maxWidth: "80%", whiteSpace: "pre-wrap" }}>
+        {text}
+      </div>
+    </div>
+  );
+}
+function UserMessage({ text }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+      <div style={{ background: "#dbeafe", border: "1px solid #bfdbfe", padding: "8px 12px", borderRadius: 12, color: "#0f172a", maxWidth: "80%" }}>
+        {text}
+      </div>
+    </div>
+  );
+}
+
+/* UI helpers */
+function PillButton({ label, onClick, disabled }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        border: "1px solid #e5e7eb",
+        background: "#fff",
+        color: "#0f172a",
+        padding: "8px 12px",
+        borderRadius: 999,
+        cursor: disabled ? "not-allowed" : "pointer",
+        fontSize: 14,
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+function RowButtons({ items }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+      {items.map((it, idx) => (
+        <PillButton key={idx} label={it.label} onClick={it.onClick} disabled={it.disabled} />
+      ))}
+    </div>
+  );
+}
+function FieldRow({ label, value, onChange, type = "text", placeholder }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ fontSize: 12, color: "#475569", marginBottom: 6 }}>{label}</div>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          borderRadius: 10,
+          border: "1px solid #e5e7eb",
+          outline: "none",
+          fontSize: 14,
+          background: "#fff",
+        }}
+      />
+    </div>
+  );
+}
+function ReviewCard({ data }) {
+  return (
+    <div style={{ border: "1px solid #e5e7eb", background: "#ffffff", borderRadius: 12, padding: 12, color: "#0f172a", marginBottom: 12 }}>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>Review your details</div>
+      <div style={{ fontSize: 14, lineHeight: 1.6 }}>
+        <div><strong>Department:</strong> {data.department || "-"}</div>
+        <div><strong>Name:</strong> {data.name || "-"}</div>
+        <div><strong>Email:</strong> {data.email || "-"}</div>
+        <div><strong>Phone:</strong> {data.phone || "-"}</div>
+        <div><strong>Date:</strong> {data.date || "-"}</div>
+      </div>
+    </div>
+  );
+}
+
+export default function ChatWidget() {
+  const [open, setOpen] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false); // New state for client-side mounting
+
+  React.useEffect(() => {
+    setMounted(true); // Set mounted to true once component is client-side mounted
+  }, []);
+
+  const Steps = React.useMemo(() => ({
+    INIT: "INIT",
+    SAID_HI: "SAID_HI",
+    CHOOSING_LANG: "CHOOSING_LANG",
+    GET_NAME_BEFORE_CHOICE: "GET_NAME_BEFORE_CHOICE", // New step
+    CHOOSING_DEPT: "CHOOSING_DEPT",
+    NAME: "NAME", // This step is now only for editing name after initial capture
+    EMAIL: "EMAIL",
+    PHONE: "PHONE",
+    DATE: "DATE",
+    READY_REVIEW: "READY_REVIEW",
+    REVIEW: "REVIEW",
+    CONFIRMED: "CONFIRMED",
+    LIVE_CHAT: "LIVE_CHAT", // New step for live chat
+    EDIT_DETAILS: "EDIT_DETAILS", // New step for editing details from agent
+  }), []);
+  const [language, setLanguage] = React.useState("en"); // 'en' for English, 'ta' for Tamil
+
+  const translations = {
+    en: {
+      welcome: "Hi! Welcome to Salem Gopi Hospital.",
+      getStarted: "To get started, please click the button below.\nTyping is disabled until you continue.",
+      sayHi: "Say Hi to Continue",
+      bookAppointment: "Book an Appointment",
+      chooseDept: "Please choose a department:",
+      typeFullName: "Please type your full name and press Enter:", // Used for initial name capture
+      typeEmail: "Thanks! Now type your email and press Enter:",
+      typePhone: "Got it. Now type your phone number and press Enter:",
+      selectDate: "Select a preferred date from the calendar below:",
+      selectedDate: "Selected date:",
+      continue: "Continue",
+      reviewDetails: "Review Details",
+      editDetails: "Edit details",
+      editDetailsPrompt: "You can edit your details. Type your Name to proceed through each step.",
+      confirmData: "Confirm your data",
+      submitting: "Submitting...",
+      appointmentSubmitted: "Thanks! Your appointment request has been submitted. Our team will reach out shortly.",
+      submissionError: "Sorry, there was an error submitting your request. Please try again.",
+      reviewYourDetails: "Review your details",
+      department: "Department:",
+      name: "Name:",
+      email: "Email:",
+      phone: "Phone:",
+      date: "Date:",
+      typeDisabled: "Type is disabled. Use the options above.",
+      typeHere: "Type here and press Enter...",
+      send: "Send",
+      nephrology: "Nephrology",
+      urology: "Urology",
+      dialysis: "Dialysis",
+      diabetesCare: "Diabetes Care",
+      other: "Other",
+      chooseLanguage: "Please choose your preferred language:",
+      otherDeptPrompt: "Please type the department you are looking for and press Enter:",
+      connectToAgent: "Connect to a Human Agent", // New translation
+      liveChatWelcome: "Connecting you to a human agent. Please wait...", // New translation
+      agentConnected: "You are now connected to a human agent. Please type your message.", // New translation
+      back: "Back", // New translation
+      next: "Next", // New translation
+      agentMessagePrefix: "Agent: ", // New translation
+      detailsConfirmed: "Thanks! Your details have been confirmed.", // New translation
+      detailsEdited: "Please enter the new value for ", // New translation
+      detailsEditComplete: "Details updated. Please confirm again.", // New translation
+      editNamePrompt: "Please type your updated name and press Enter:",
+      editEmailPrompt: "Please type your updated email and press Enter:",
+      editPhonePrompt: "Please type your updated phone number and press Enter:",
+      edit: "Edit", // New translation
+      cancelEdit: "Cancel Edit", // New translation
+    },
+    ta: {
+      welcome: "வணக்கம்! சேலம் கோபி மருத்துவமனைக்கு வரவேற்கிறோம்.",
+      getStarted: "தொடங்குவதற்கு, கீழே உள்ள பொத்தானை கிளிக் செய்யவும்.\nநீங்கள் தொடரும் வரை தட்டச்சு செய்வது முடக்கப்பட்டுள்ளது.",
+      sayHi: "வணக்கம் சொல்ல தொடரவும்",
+      bookAppointment: "சந்திப்பு பதிவு செய்யவும்",
+      chooseDept: "தயவுசெய்து ஒரு துறையைத் தேர்ந்தெடுக்கவும்:",
+      typeFullName: "உங்கள் முழுப் பெயரைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      typeEmail: "நன்றி! இப்போது உங்கள் மின்னஞ்சலைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      typePhone: "புரிந்தது. இப்போது உங்கள் தொலைபேசி எண்ணைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      selectDate: "கீழே உள்ள காலெண்டரில் இருந்து விருப்பமான தேதியைத் தேர்ந்தெடுக்கவும்:",
+      selectedDate: "தேர்ந்தெடுக்கப்பட்ட தேதி:",
+      continue: "தொடரவும்",
+      reviewDetails: "விவரங்களை மதிப்பாய்வு செய்யவும்",
+      editDetails: "விவரங்களைத் திருத்தவும்",
+      editDetailsPrompt: "உங்கள் விவரங்களைத் திருத்தலாம். ஒவ்வொரு படிநிலையிலும் தொடர புதுப்பிக்கப்பட்ட மதிப்பைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்.",
+      confirmData: "உங்கள் தரவை உறுதிப்படுத்தவும்",
+      submitting: "சமர்ப்பிக்கப்படுகிறது...",
+      appointmentSubmitted: "நன்றி! உங்கள் சந்திப்பு கோரிக்கை சமர்ப்பிக்கப்பட்டுள்ளது. எங்கள் குழு விரைவில் உங்களைத் தொடர்பு கொள்ளும்.",
+      submissionError: "மன்னிக்கவும், உங்கள் கோரிக்கையை சமர்ப்பிப்பதில் பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.",
+      reviewYourDetails: "உங்கள் விவரங்களை மதிப்பாய்வு செய்யவும்",
+      department: "துறை:",
+      name: "பெயர்:",
+      email: "மின்னஞ்சல்:",
+      phone: "தொலைபேசி:",
+      date: "தேதி:",
+      typeDisabled: "தட்டச்சு செய்வது முடக்கப்பட்டுள்ளது. மேலே உள்ள விருப்பங்களைப் பயன்படுத்தவும்.",
+      typeHere: "இங்கே தட்டச்சு செய்து Enter ஐ அழுத்தவும்...",
+      send: "அனுப்பு",
+      nephrology: "சிறுநீரகவியல்",
+      urology: "சிறுநீரக அறுவை சிகிச்சை",
+      dialysis: "டயாலிசிஸ்",
+      diabetesCare: "நீரிழிவு சிகிச்சை",
+      other: "மற்றவை",
+      chooseLanguage: "தயவுசெய்து உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்:",
+      otherDeptPrompt: "நீங்கள் தேடும் துறையைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      connectToAgent: "மனித முகவருடன் இணைக்கவும்", // New translation
+      liveChatWelcome: "மனித முகவருடன் உங்களை இணைக்கிறோம். காத்திருக்கவும்...", // New translation
+      agentConnected: "நீங்கள் இப்போது ஒரு மனித முகவருடன் இணைக்கப்பட்டுள்ளீர்கள். உங்கள் செய்தியை தட்டச்சு செய்யவும்.", // New translation
+      back: "பின்செல்", // New translation
+      next: "அடுத்து", // New translation
+      agentMessagePrefix: "முகவர்: ", // New translation
+      detailsConfirmed: "நன்றி! உங்கள் விவரங்கள் உறுதிப்படுத்தப்பட்டுள்ளன.", // New translation
+      detailsEdited: "புதிய மதிப்பை உள்ளிடவும் ", // New translation
+      detailsEditComplete: "விவரங்கள் புதுப்பிக்கப்பட்டன. மீண்டும் உறுதிப்படுத்தவும்.", // New translation
+      editNamePrompt: "உங்கள் புதுப்பிக்கப்பட்ட பெயரைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      editEmailPrompt: "உங்கள் புதுப்பிக்கப்பட்ட மின்னஞ்சலைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      editPhonePrompt: "உங்கள் புதுப்பிக்கப்பட்ட தொலைபேசி எண்ணைத் தட்டச்சு செய்து Enter ஐ அழுத்தவும்:",
+      edit: "திருத்து", // New translation
+      cancelEdit: "திருத்துவதை ரத்துசெய்", // New translation
+    },
+  };
+
+  const t = translations[language];
+
+  const [messages, setMessages] = React.useState([{ from: "bot", text: t.welcome }, { from: "system", text: t.getStarted }]);
+  const [step, setStep] = React.useState(Steps.INIT);
+  const [form, setForm] = React.useState({ department: "", name: "", email: "", phone: "", date: "" });
+  const [sending, setSending] = React.useState(false);
+  const [history, setHistory] = React.useState([]); // To store step history for back button
+
+  // State for editing details from agent
+  const [isEditingDetails, setIsEditingDetails] = React.useState(false);
+  const [currentEditField, setCurrentEditField] = React.useState(null);
+  const [agentSentDetails, setAgentSentDetails] = React.useState(null); // Stores the details sent by agent
+
+  // Bottom input enabled only for specific steps and when 'Other' department is selected, or in live chat, or editing details
+  const inputDisabled = ![Steps.NAME, Steps.EMAIL, Steps.PHONE, Steps.LIVE_CHAT, Steps.GET_NAME_BEFORE_CHOICE, Steps.EDIT_DETAILS].includes(step) && !(step === Steps.CHOOSING_DEPT && form.department === t.other);
+
+  function pushBot(text, type = 'text', details = null) { setMessages((m) => [...m, { from: "bot", text, type, details }]); }
+  function pushSystem(text) { setMessages((m) => [...m, { from: "system", text }]); }
+  function pushUser(text) { setMessages((m) => [...m, { from: "user", text }]); }
+
+  function goToStep(newStep) {
+    setHistory((h) => [...h, step]); // Save current step to history
+    setStep(newStep);
+  }
+
+  function goBack() {
+    if (history.length > 0) {
+      const prevStep = history.pop();
+      setStep(prevStep);
+      setHistory([...history]); // Update history to trigger re-render
+    }
+  }
+
+  function handleSayHi() {
+    pushUser(t.sayHi);
+    goToStep(Steps.CHOOSING_LANG);
+    setTimeout(() => pushBot(t.chooseLanguage), 40);
+  }
+
+  function handleChooseLanguage(lang) {
+    setLanguage(lang);
+    pushUser(lang === "en" ? "English" : "தமிழ்");
+    setMessages([{ from: "bot", text: translations[lang].welcome }, { from: "system", text: translations[lang].getStarted }]);
+    goToStep(Steps.GET_NAME_BEFORE_CHOICE); // New step: Get name first
+    setTimeout(() => pushBot(translations[lang].typeFullName), 40);
+  }
+
+  function handleBookAppointment() {
+    pushUser(t.bookAppointment);
+    goToStep(Steps.CHOOSING_DEPT);
+    setTimeout(() => pushBot(t.chooseDept), 40);
+  }
+
+  function handleChooseDept(dept) {
+    pushUser(dept);
+    setForm((f) => ({ ...f, department: dept }));
+    if (dept === t.other) {
+      setTimeout(() => {
+        pushBot(t.otherDeptPrompt);
+        goToStep(Steps.CHOOSING_DEPT); // Stay in CHOOSING_DEPT to allow typing for 'Other'
+      }, 40);
+    } else {
+      setTimeout(() => {
+        pushBot(t.typeEmail); // Changed to email, as name is already captured
+        goToStep(Steps.EMAIL);
+      }, 40);
+    }
+  }
+
+  // User types in bottom box for these steps
+  function onSend(text) {
+    const v = text.trim();
+    if (!v) return;
+
+    if (step === Steps.GET_NAME_BEFORE_CHOICE) { // New logic for initial name capture
+      setForm((f) => ({ ...f, name: v }));
+      pushUser(v);
+      setTimeout(() => {
+        pushBot(t.bookAppointment); // Now ask to book appointment or connect to agent
+        goToStep(Steps.SAID_HI);
+      }, 40);
+    } else if (step === Steps.NAME) { // This step is now only for editing name
+      setForm((f) => ({ ...f, name: v }));
+      pushUser(v);
+      setTimeout(() => { pushBot(t.typeEmail); goToStep(Steps.EMAIL); }, 40);
+    } else if (step === Steps.EMAIL) {
+      setForm((f) => ({ ...f, email: v }));
+      pushUser(v);
+      setTimeout(() => { pushBot(t.typePhone); goToStep(Steps.PHONE); }, 40);
+    } else if (step === Steps.PHONE) {
+      setForm((f) => ({ ...f, phone: v }));
+      pushUser(v);
+      setTimeout(() => { pushBot(t.selectDate); goToStep(Steps.DATE); }, 40);
+    } else if (step === Steps.CHOOSING_DEPT && form.department === t.other) {
+      setForm((f) => ({ ...f, department: v }));
+      pushUser(v);
+      setTimeout(() => { pushBot(t.typeEmail); goToStep(Steps.EMAIL); }, 40); // Changed to email
+    } else if (step === Steps.LIVE_CHAT) {
+      pushUser(v);
+      const customerName = form.name || 'Guest'; // Use the form's name for the current customer
+      if (customerName && mounted) { // Ensure localStorage is accessed only on client
+        const liveChatSessions = JSON.parse(localStorage.getItem('liveChatSessions') || '{}');
+        const currentSession = liveChatSessions[customerName] || { messages: [] };
+        const newMessages = [...currentSession.messages, { from: 'user', text: v }];
+        liveChatSessions[customerName] = { messages: newMessages };
+        localStorage.setItem('liveChatSessions', JSON.stringify(liveChatSessions));
+      }
+    } else if (step === Steps.EDIT_DETAILS) {
+      if (currentEditField) {
+        const updatedDetails = { ...agentSentDetails, [currentEditField]: v };
+        setAgentSentDetails(updatedDetails);
+        pushUser(`${currentEditField}: ${v}`);
+
+        // Move to the next field or re-confirm
+        const fields = ['name', 'email', 'phone'];
+        const currentIndex = fields.indexOf(currentEditField);
+        if (currentIndex < fields.length - 1) {
+          const nextField = fields[currentIndex + 1];
+          setCurrentEditField(nextField);
+          pushBot(t[`edit${nextField.charAt(0).toUpperCase() + nextField.slice(1)}Prompt`]);
+        } else {
+          setCurrentEditField(null); // All fields edited
+          setIsEditingDetails(false);
+          pushBot(t.detailsEditComplete, 'details_request', updatedDetails); // Show card for re-confirmation
+          // No need to change step here, as the card is displayed within LIVE_CHAT context
+        }
+      }
+    }
+  }
+
+  function allFilled(o) {
+    return o.department && o.name && o.email && o.phone && o.date;
+  }
+
+  function confirmData() {
+    setSending(true);
+    const payload = {
+      action: "book_appointment",
+      data: { ...form },
+      timestamp: new Date().toISOString(),
+    };
+    const WEBHOOK_URL = "https://play.svix.com/in/e_tqsZixUKrnIAeUrJoHEtAET2LKL/"; // replace with real endpoint if needed
+
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        setSending(false);
+        if (!res.ok) throw new Error(await res.text());
+        pushUser(t.confirmData);
+        goToStep(Steps.CONFIRMED);
+        pushBot(t.appointmentSubmitted);
+      })
+      .catch((e) => {
+        setSending(false);
+        pushBot(t.submissionError);
+        console.error(e);
+      });
+  }
+
+  function handleConnectToAgent() {
+    pushUser(t.connectToAgent);
+    goToStep(Steps.LIVE_CHAT);
+    pushSystem(t.liveChatWelcome); // "Connecting you to a human agent. Please wait..."
+
+    const customerName = form.name || 'Guest';
+    if (mounted) { // Ensure localStorage is accessed only on client
+      // Initialize or get existing sessions
+      const liveChatSessions = JSON.parse(localStorage.getItem('liveChatSessions') || '{}');
+      // Create a new session for this customer if it doesn't exist, or clear existing messages
+      liveChatSessions[customerName] = { messages: [] };
+      localStorage.setItem('liveChatSessions', JSON.stringify(liveChatSessions));
+      // No need for 'activeCustomerNameForChatWidget' anymore, as each widget instance knows its own customerName
+    }
+
+    // Simulate connection delay and then show "connected" message
+    setTimeout(() => {
+      pushBot(t.agentConnected); // "You are now connected to a human agent. Please type your message."
+    }, 2000); // 2 second delay for connection message
+  }
+
+  // Handle confirmation of details sent by agent
+  function handleConfirmAgentDetails() {
+    if (!agentSentDetails) return;
+
+    setSending(true);
+    const payload = {
+      action: "customer_details_confirmed",
+      data: { ...agentSentDetails },
+      timestamp: new Date().toISOString(),
+    };
+    const WEBHOOK_URL = "https://play.svix.com/in/e_tqsZixUKrnIAeUrJoHEtAET2LKL/"; // replace with real endpoint if needed
+
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        setSending(false);
+        if (!res.ok) throw new Error(await res.text());
+        pushUser(t.confirmData);
+        pushBot(t.detailsConfirmed);
+        setAgentSentDetails(null); // Clear details after confirmation
+        setIsEditingDetails(false);
+        setCurrentEditField(null);
+
+        // Also send a message to the agent that details are confirmed
+        const customerName = form.name || 'Guest';
+        if (customerName && mounted) { // Ensure localStorage is accessed only on client
+          const liveChatSessions = JSON.parse(localStorage.getItem('liveChatSessions') || '{}');
+          const currentSession = liveChatSessions[customerName] || { messages: [] };
+          const newMessages = [...currentSession.messages, { from: 'user', text: `Details confirmed: ${JSON.stringify(agentSentDetails)}` }];
+          liveChatSessions[customerName] = { messages: newMessages };
+          localStorage.setItem('liveChatSessions', JSON.stringify(liveChatSessions));
+        }
+
+        goToStep(Steps.LIVE_CHAT); // Go back to live chat
+      })
+      .catch((e) => {
+        setSending(false);
+        pushBot(t.submissionError);
+        console.error(e);
+      });
+  }
+
+  // Handle editing details sent by agent
+  function handleEditAgentDetails(fieldKey = null) {
+    setIsEditingDetails(true);
+    setCurrentEditField(fieldKey); // Set the specific field to edit
+    goToStep(Steps.EDIT_DETAILS);
+    if (fieldKey) {
+      pushBot(t[`edit${fieldKey.charAt(0).toUpperCase() + fieldKey.slice(1)}Prompt`]);
+    } else {
+      // If fieldKey is null, it means cancel editing
+      setIsEditingDetails(false);
+      setCurrentEditField(null);
+      pushBot(t.detailsEditComplete, 'details_request', agentSentDetails); // Show card for re-confirmation
+      goToStep(Steps.LIVE_CHAT);
+    }
+  }
+
+  // Handle field change during agent-initiated details edit
+  function handleAgentDetailsFieldChange(fieldKey, value) {
+    setAgentSentDetails(prev => ({ ...prev, [fieldKey]: value }));
+  }
+
+
+  // Listen for agent messages from localStorage
+  React.useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === 'liveChatSessions' && open) { // Only process if widget is open
+        const customerName = form.name || 'Guest'; // Get the current widget's customer name
+        if (customerName) {
+          const liveChatSessions = JSON.parse(event.newValue || '{}');
+          const currentSession = liveChatSessions[customerName];
+          if (currentSession) {
+            const agentMessages = currentSession.messages.filter(m => m.from === 'agent');
+            const lastAgentMessage = agentMessages[agentMessages.length - 1];
+
+            // Check if the last message in the widget is different from the last agent message from localStorage
+            const lastWidgetMessage = messages[messages.length - 1];
+
+            if (lastAgentMessage) {
+              // If it's a details request, update agentSentDetails and push a special message
+              if (lastAgentMessage.type === 'details_request' && lastAgentMessage.details) {
+                // Only update if the details are actually different to avoid infinite loops
+                if (lastWidgetMessage?.type !== 'details_request' || JSON.stringify(lastWidgetMessage.details) !== JSON.stringify(lastAgentMessage.details)) {
+                  setAgentSentDetails(lastAgentMessage.details);
+                  pushBot(lastAgentMessage.text, 'details_request', lastAgentMessage.details);
+                  setIsEditingDetails(false); // Reset editing state
+                  setCurrentEditField(null);
+                  goToStep(Steps.LIVE_CHAT); // Ensure we are in live chat to show the card
+                }
+              } else if (lastWidgetMessage?.from !== 'bot' || lastWidgetMessage?.text !== t.agentMessagePrefix + lastAgentMessage.text) {
+                // Regular agent message
+                pushBot(t.agentMessagePrefix + lastAgentMessage.text);
+              }
+            }
+          }
+        }
+      }
+    };
+    if (mounted) { // Only add event listener if component is mounted on client
+      window.addEventListener('storage', handleStorageChange);
+      return () => window.removeEventListener('storage', handleStorageChange);
+    }
+  }, [open, messages, form.name, t.agentMessagePrefix, pushBot, Steps.LIVE_CHAT, Steps.EDIT_DETAILS, agentSentDetails, mounted]); // Added mounted to dependencies
+
+
+  // Scroll to bottom on updates
+  const scrollRef = React.useRef(null);
+  React.useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages, step, form, isEditingDetails, currentEditField]);
+
+  // If not mounted, render nothing to prevent hydration errors
+  if (!mounted) {
+    return null;
+  }
+
+  function InteractiveBlock() {
+    if (step === Steps.INIT)
+      return <RowButtons items={[{ label: t.sayHi, onClick: handleSayHi }]} />;
+
+    if (step === Steps.CHOOSING_LANG)
+      return <RowButtons items={[{ label: "English", onClick: () => handleChooseLanguage("en") }, { label: "தமிழ்", onClick: () => handleChooseLanguage("ta") }]} />;
+
+    if (step === Steps.SAID_HI)
+      return (
+        <RowButtons
+          items={[
+            { label: t.bookAppointment, onClick: handleBookAppointment },
+            { label: t.connectToAgent, onClick: handleConnectToAgent }, // New button for live chat
+          ]}
+        />
+      );
+
+    if (step === Steps.CHOOSING_DEPT && form.department !== t.other) {
+      const opts = [t.nephrology, t.urology, t.dialysis, t.diabetesCare, t.other];
+      return (
+        <>
+          <RowButtons items={opts.map((d) => ({ label: d, onClick: () => handleChooseDept(d) }))} />
+          <RowButtons items={[{ label: t.back, onClick: goBack, disabled: history.length === 0 }]} />
+        </>
+      );
+    }
+
+    if (step === Steps.DATE) {
+      return (
+        <div style={{ marginBottom: 8 }}>
+          <FieldRow
+            label={t.selectDate}
+            type="date"
+            value={form.date}
+            onChange={(v) => setForm((f) => ({ ...f, date: v }))}
+          />
+          <RowButtons
+            items={[
+              {
+                label: t.back,
+                onClick: goBack,
+                disabled: history.length === 0,
+              },
+              {
+                label: t.continue,
+                onClick: () => {
+                  if (!form.date) return;
+                  pushUser(`${t.selectedDate} ${form.date}`);
+                  goToStep(Steps.READY_REVIEW);
+                },
+                disabled: !form.date,
+              },
+            ]}
+          />
+        </div>
+      );
+    }
+
+    if (step === Steps.READY_REVIEW) {
+      return (
+        <RowButtons
+          items={[
+            {
+              label: t.back,
+              onClick: goBack,
+              disabled: history.length === 0,
+            },
+            {
+              label: t.reviewDetails,
+              onClick: () => {
+                if (!allFilled(form)) return;
+                goToStep(Steps.REVIEW);
+              },
+              disabled: !allFilled(form),
+            },
+          ]}
+        />
+      );
+    }
+
+    if (step === Steps.REVIEW) {
+      return (
+        <div>
+          <ReviewCard data={form} />
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <PillButton
+              label={t.editDetails}
+              onClick={() => {
+                goToStep(Steps.NAME);
+                pushBot(t.editDetailsPrompt);
+              }}
+            />
+            <button
+              onClick={confirmData}
+              disabled={sending}
+              style={{
+                background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "10px 12px",
+                cursor: sending ? "not-allowed" : "pointer",
+                opacity: sending ? 0.7 : 1,
+              }}
+            >
+              {sending ? t.submitting : t.confirmData}
+            </button>
+            <PillButton
+              label={t.back}
+              onClick={goBack}
+              disabled={history.length === 0}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (step === Steps.LIVE_CHAT || step === Steps.EDIT_DETAILS) {
+      // In live chat or editing details, only show back button if not currently editing a specific field
+      if (isEditingDetails && currentEditField) {
+        return null; // Input field is for specific edit
+      }
+      return (
+        <RowButtons items={[{ label: t.back, onClick: goBack, disabled: history.length === 0 }]} />
+      );
+    }
+
+    // For steps where user types (GET_NAME_BEFORE_CHOICE, NAME, EMAIL, PHONE, CHOOSING_DEPT with 'Other'),
+    // we still want the back button to be available.
+    if ([Steps.GET_NAME_BEFORE_CHOICE, Steps.NAME, Steps.EMAIL, Steps.PHONE].includes(step) || (step === Steps.CHOOSING_DEPT && form.department === t.other)) {
+      return (
+        <RowButtons items={[{ label: t.back, onClick: goBack, disabled: history.length === 0 }]} />
+      );
+    }
+
+    return null;
+  }
+
+  return (
+    <>
+      {/* Floating Button */}
+      <button
+        aria-label="Open chat"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          position: "fixed",
+          right: "20px",
+          bottom: "20px",
+          zIndex: 1000,
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          border: "none",
+          background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #0ea5e9 100%)",
+          color: "#fff",
+          boxShadow: "0 10px 20px rgba(0,0,0,0.15)",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <i className="fa-solid fa-comments" style={{ fontSize: 22 }} />
+      </button>
+
+      {/* Chatbox */}
+      <div
+        style={{
+          position: "fixed",
+          right: "20px",
+          bottom: open ? "20px" : "-600px", // Adjusted to hide completely
+          zIndex: 1000,
+          width: "min(360px, 92vw)",
+          height: "600px",
+          background: "#ffffff",
+          borderRadius: "14px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.20), 0 6px 10px rgba(0,0,0,0.10)",
+          overflow: "hidden",
+          transition: "bottom 280ms ease",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        aria-hidden={!open}
+      >
+        {/* Header */}
+        <div
+          style={{
+            background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #0ea5e9 100%)",
+            color: "#fff",
+            padding: "12px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+              SG
+            </div>
+            <div style={{ lineHeight: 1.1 }}>
+              <div style={{ fontWeight: 700 }}>Salem Gopi Hospital</div>
+              <div style={{ fontSize: 12, opacity: 0.9 }}>Chat Support</div>
+            </div>
+          </div>
+          <button onClick={() => setOpen(false)} aria-label="Close chat" style={{ background: "transparent", color: "#fff", border: "none", cursor: "pointer", fontSize: 18 }}>
+            <i className="fa-solid fa-xmark" />
+          </button>
+        </div>
+
+        {/* Messages + Interactive controls */}
+        <div ref={scrollRef} style={{ flex: 1, background: "#f7fafc", padding: "12px", overflowY: "auto" }}>
+          {messages.map((m, idx) =>
+            m.from === "system" ? <SystemMessage key={idx} text={m.text} /> :
+            m.from === "bot" ? <BotMessage
+                                  key={idx}
+                                  text={m.text}
+                                  type={m.type}
+                                  details={m.details}
+                                  onConfirmDetails={handleConfirmAgentDetails}
+                                  onEditDetails={handleEditAgentDetails}
+                                  isEditingDetails={isEditingDetails}
+                                  onFieldChangeDetails={handleAgentDetailsFieldChange}
+                                  currentEditFieldDetails={currentEditField}
+                                  t={t}
+                                /> :
+            <UserMessage key={idx} text={m.text} />
+          )}
+
+          <InteractiveBlock />
+        </div>
+
+        {/* Bottom input */}
+        <BottomInput disabled={inputDisabled} onSend={onSend} placeholder={t.typeHere} />
+      </div>
+    </>
+  );
+}
+
+function BottomInput({ disabled, onSend, placeholder }) {
+  const [value, setValue] = React.useState("");
+
+  function send() {
+    if (disabled) return;
+    const v = value.trim();
+    if (!v) return;
+    onSend(v);
+    setValue("");
+  }
+
+  return (
+    <div style={{ borderTop: "1px solid #e5e7eb", padding: "10px", background: "#ffffff", display: "flex", gap: 8, alignItems: "center" }}>
+      <input
+        value={value}
+        disabled={disabled}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+        placeholder={disabled ? "Type is disabled. Use the options above." : placeholder}
+        style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "1px solid #e5e7eb", outline: "none", fontSize: 14, background: disabled ? "#f1f5f9" : "#fff" }}
+      />
+      <button
+        onClick={send}
+        disabled={disabled}
+        aria-label="Send message"
+        style={{
+          background: "linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%)",
+          color: "#ffffff",
+          border: "none",
+          borderRadius: 10,
+          padding: "10px 12px",
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.6 : 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+        }}
+      >
+        <i className="fa-solid fa-paper-plane" />
+        Send
+      </button>
+    </div>
+  );
+}
