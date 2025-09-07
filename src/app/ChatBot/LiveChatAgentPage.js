@@ -14,79 +14,29 @@ function AgentMessage({ text }) {
   );
 }
 // Customer messages will now be on the left
-function CustomerMessage({ text, onPushToInfo }) {
-  const [showMenu, setShowMenu] = React.useState(false);
-
+function CustomerMessage({ text }) {
   return (
     <div style={{ display: "flex", marginBottom: 10, gap: 8, alignItems: "flex-start" }}>
       <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#1d4ed8", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flex: "0 0 auto" }}>
         C
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 5 }}> {/* Wrapper for message and button */}
-        <div style={{ background: "#ffffff", border: "1px solid #e5e7eb", padding: "8px 12px", borderRadius: 12, color: "#0f172a", maxWidth: "100%", whiteSpace: "pre-wrap", position: "relative" }}>
-          {text}
-        </div>
-        {onPushToInfo && (
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#64748b", padding: "0 5px" }}
-            >
-              &#8942; {/* Unicode for three vertical dots */}
-            </button>
-            {showMenu && (
-              <div style={{
-                position: "absolute",
-                top: "100%",
-                right: 0,
-                background: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: 8,
-                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                zIndex: 10,
-                minWidth: 120,
-              }}>
-                <button
-                  onClick={() => { onPushToInfo(text); setShowMenu(false); }}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    textAlign: "left",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    color: "#0f172a",
-                    "&:hover": { background: "#f1f5f9" }
-                  }}
-                >
-                  Push to Info
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+      <div style={{ background: "#ffffff", border: "1px solid #e5e7eb", padding: "8px 12px", borderRadius: 12, color: "#0f172a", maxWidth: "100%", whiteSpace: "pre-wrap" }}>
+        {text}
       </div>
     </div>
   );
 }
 
 export default function LiveChatAgentPage() {
-  // State to hold all chat sessions: { customerName: { messages: [], unreadCount: 0, details: { name: '', email: '', phone: '' } } }
+  // State to hold all chat sessions: { customerName: { messages: [], unreadCount: 0 } }
   const [chatSessions, setChatSessions] = React.useState({});
   const [activeCustomer, setActiveCustomer] = React.useState(null); // The customer whose chat is currently open
   const [inputValue, setInputValue] = React.useState("");
-  const [mounted, setMounted] = React.useState(false); // New state for client-side mounting
 
   const scrollRef = React.useRef(null);
 
-  React.useEffect(() => {
-    setMounted(true); // Set mounted to true once component is client-side mounted
-  }, []);
-
   // Function to load all chat sessions from localStorage
   const loadChatSessions = React.useCallback(() => {
-    if (!mounted) return; // Only access localStorage if mounted
     const storedSessions = JSON.parse(localStorage.getItem('liveChatSessions') || '{}');
     setChatSessions(prevSessions => {
       const newSessions = { ...prevSessions };
@@ -94,17 +44,14 @@ export default function LiveChatAgentPage() {
         newSessions[customerName] = {
           messages: storedSessions[customerName].messages,
           unreadCount: prevSessions[customerName]?.unreadCount || 0,
-          details: prevSessions[customerName]?.details || { name: customerName, email: '', phone: '' } // Initialize details
         };
       }
       return newSessions;
     });
-  }, [mounted]);
+  }, []);
 
   // Effect to load sessions on mount and listen for storage changes
   React.useEffect(() => {
-    if (!mounted) return; // Only add event listener if mounted
-
     loadChatSessions(); // Initial load
 
     const handleStorageChange = (event) => {
@@ -118,25 +65,16 @@ export default function LiveChatAgentPage() {
 
             // Calculate new unread count
             let newUnreadCount = prevSessions[customerName]?.unreadCount || 0;
-            // Count only new messages from the user that are not already in the current session
-            const newCustomerMessages = newMessages.filter(m => m.from === 'user');
-            const currentCustomerMessages = currentMessages.filter(m => m.from === 'user');
-
-            if (newCustomerMessages.length > currentCustomerMessages.length) {
-              // Find messages that are in newCustomerMessages but not in currentCustomerMessages
-              const trulyNewMessages = newCustomerMessages.filter(
-                (newMessage) => !currentCustomerMessages.some(
-                  (currentMessage) => currentMessage.text === newMessage.text && currentMessage.from === newMessage.from
-                )
-              );
-              newUnreadCount += trulyNewMessages.length;
+            if (newMessages.length > currentMessages.length && customerName !== activeCustomer) {
+              // Count only new messages from the user
+              const newCustomerMessages = newMessages.filter(m => m.from === 'user').length;
+              const currentCustomerMessages = currentMessages.filter(m => m.from === 'user').length;
+              newUnreadCount += (newCustomerMessages - currentCustomerMessages);
             }
-
 
             updatedSessions[customerName] = {
               messages: newMessages,
-              unreadCount: customerName === activeCustomer ? 0 : newUnreadCount, // Reset unread if active
-              details: prevSessions[customerName]?.details || { name: customerName, email: '', phone: '' } // Preserve or initialize details
+              unreadCount: newUnreadCount,
             };
           }
           // Remove sessions that no longer exist in localStorage
@@ -152,7 +90,7 @@ export default function LiveChatAgentPage() {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [loadChatSessions, activeCustomer, mounted]); // Added mounted to dependencies
+  }, [loadChatSessions, activeCustomer]);
 
   // Scroll to bottom when active chat messages change
   React.useEffect(() => {
@@ -162,14 +100,14 @@ export default function LiveChatAgentPage() {
   }, [activeCustomer, chatSessions[activeCustomer]?.messages]);
 
   // Function to send a message from the agent to the active customer
-  function sendAgentMessage(messageText, type = 'text', details = null) {
+  function sendAgentMessage(messageText) {
     const v = messageText.trim();
-    if (!v || !activeCustomer || !mounted) return; // Only send if mounted
+    if (!v || !activeCustomer) return;
 
     setChatSessions(prevSessions => {
       const updatedSessions = { ...prevSessions };
       const currentMessages = updatedSessions[activeCustomer]?.messages || [];
-      const newMessages = [...currentMessages, { from: 'agent', text: v, type, details }];
+      const newMessages = [...currentMessages, { from: 'agent', text: v }];
       updatedSessions[activeCustomer] = { ...updatedSessions[activeCustomer], messages: newMessages };
 
       // Update localStorage
@@ -192,58 +130,7 @@ export default function LiveChatAgentPage() {
     }));
   }
 
-  // Function to update customer details from a message
-  function pushToInfo(messageText) {
-    if (!mounted) return; // Only access localStorage if mounted
-    setChatSessions(prevSessions => {
-      if (!activeCustomer) return prevSessions;
-      const updatedSessions = { ...prevSessions };
-      const currentDetails = updatedSessions[activeCustomer]?.details || { name: activeCustomer, email: '', phone: '' };
-
-      // Simple regex to extract email or phone. Can be made more robust.
-      const emailMatch = messageText.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/);
-      const phoneMatch = messageText.match(/(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}/);
-
-      if (emailMatch && !currentDetails.email) {
-        currentDetails.email = emailMatch[0];
-      }
-      if (phoneMatch && !currentDetails.phone) {
-        currentDetails.phone = phoneMatch[0];
-      }
-
-      updatedSessions[activeCustomer] = { ...updatedSessions[activeCustomer], details: currentDetails };
-      return updatedSessions;
-    });
-  }
-
-  // Function to send collected details to the customer for confirmation
-  function sendDetailsToCustomer() {
-    if (!activeCustomer || !mounted) return; // Only send if mounted
-
-    const details = chatSessions[activeCustomer]?.details;
-    if (!details || (!details.name && !details.email && !details.phone)) {
-      alert("No details to send to customer.");
-      return;
-    }
-
-    // Send a structured message with type 'details_request' and the details payload
-    sendAgentMessage("Please confirm your details:", 'details_request', details);
-  }
-
-  // Function to request a specific field from the customer
-  function requestFieldFromCustomer(field) {
-    if (!activeCustomer || !mounted) return; // Only send if mounted
-    sendAgentMessage(`Please send your ${field.charAt(0).toUpperCase() + field.slice(1)}.`);
-  }
-
-
   const activeChatMessages = chatSessions[activeCustomer]?.messages || [];
-  const activeCustomerDetails = chatSessions[activeCustomer]?.details || { name: '', email: '', phone: '' };
-
-  // If not mounted, render nothing to prevent hydration errors
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div
@@ -359,15 +246,15 @@ export default function LiveChatAgentPage() {
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} style={{ flex: 1, padding: "12px", overflowY: "auto", background: "#f7fafc" }}>
-          {/* Removed column-reverse and reverse() to show most recent at the bottom, which is standard chat behavior */}
+        <div ref={scrollRef} style={{ flex: 1, padding: "12px", overflowY: "auto", background: "#f7fafc", display: "flex", flexDirection: "column-reverse" }}>
+          {/* Using column-reverse to show recent messages at the bottom */}
           {!activeCustomer ? (
             <div style={{ textAlign: "center", color: "#64748b", marginTop: 50 }}>
               Please select a customer from the left sidebar to view their chat.
             </div>
           ) : (
-            activeChatMessages.map((m, idx) => // Display messages in chronological order
-              m.from === "user" ? <CustomerMessage key={idx} text={m.text} onPushToInfo={pushToInfo} /> :
+            [...activeChatMessages].reverse().map((m, idx) => // Reverse here for display
+              m.from === "user" ? <CustomerMessage key={idx} text={m.text} /> :
               <AgentMessage key={idx} text={m.text} />
             )
           )}
@@ -403,126 +290,6 @@ export default function LiveChatAgentPage() {
           >
             <i className="fa-solid fa-paper-plane" />
             Send
-          </button>
-        </div>
-      </div>
-
-      {/* Customer Details Container */}
-      <div
-        style={{
-          width: "300px",
-          borderLeft: "1px solid #e5e7eb",
-          background: "#f8fafc",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #0ea5e9 100%)",
-            color: "#fff",
-            padding: "12px 14px",
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Customer Details
-        </div>
-        <div style={{ flex: 1, padding: "15px" }}>
-          {!activeCustomer ? (
-            <div style={{ color: "#64748b", fontSize: 14 }}>
-              Select a customer to view details.
-            </div>
-          ) : (
-            <div>
-              <div style={{ marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ fontSize: 12, color: "#475569", marginBottom: 4, flex: 1 }}>Name:</div>
-                <input
-                  type="text"
-                  value={activeCustomerDetails.name}
-                  onChange={(e) => setChatSessions(prev => ({
-                    ...prev,
-                    [activeCustomer]: { ...prev[activeCustomer], details: { ...prev[activeCustomer].details, name: e.target.value } }
-                  }))}
-                  style={{ width: "100%", padding: "8px", borderRadius: 6, border: "1px solid #e5e7eb", fontSize: 14, flex: 3 }}
-                  placeholder="Customer Name"
-                />
-                {!activeCustomerDetails.name && (
-                  <button
-                    onClick={() => requestFieldFromCustomer('name')}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontSize: 16, padding: "0 5px" }}
-                    title="Request Name"
-                  >
-                    <i className="fa-solid fa-paper-plane" />
-                  </button>
-                )}
-              </div>
-              <div style={{ marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ fontSize: 12, color: "#475569", marginBottom: 4, flex: 1 }}>Email:</div>
-                <input
-                  type="email"
-                  value={activeCustomerDetails.email}
-                  onChange={(e) => setChatSessions(prev => ({
-                    ...prev,
-                    [activeCustomer]: { ...prev[activeCustomer], details: { ...prev[activeCustomer].details, email: e.target.value } }
-                  }))}
-                  style={{ width: "100%", padding: "8px", borderRadius: 6, border: "1px solid #e5e7eb", fontSize: 14, flex: 3 }}
-                  placeholder="Customer Email"
-                />
-                {!activeCustomerDetails.email && (
-                  <button
-                    onClick={() => requestFieldFromCustomer('email')}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontSize: 16, padding: "0 5px" }}
-                    title="Request Email"
-                  >
-                    <i className="fa-solid fa-paper-plane" />
-                  </button>
-                )}
-              </div>
-              <div style={{ marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ fontSize: 12, color: "#475569", marginBottom: 4, flex: 1 }}>Phone:</div>
-                <input
-                  type="tel"
-                  value={activeCustomerDetails.phone}
-                  onChange={(e) => setChatSessions(prev => ({
-                    ...prev,
-                    [activeCustomer]: { ...prev[activeCustomer], details: { ...prev[activeCustomer].details, phone: e.target.value } }
-                  }))}
-                  style={{ width: "100%", padding: "8px", borderRadius: 6, border: "1px solid #e5e7eb", fontSize: 14, flex: 3 }}
-                  placeholder="Customer Phone"
-                />
-                {!activeCustomerDetails.phone && (
-                  <button
-                    onClick={() => requestFieldFromCustomer('phone')}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontSize: 16, padding: "0 5px" }}
-                    title="Request Phone"
-                  >
-                    <i className="fa-solid fa-paper-plane" />
-                  </button>
-                )}
-              </div>
-              {/* Add other details here as needed */}
-            </div>
-          )}
-        </div>
-        <div style={{ borderTop: "1px solid #e5e7eb", padding: "10px", background: "#ffffff" }}>
-          <button
-            onClick={sendDetailsToCustomer}
-            disabled={!activeCustomer}
-            style={{
-              width: "100%",
-              background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              padding: "10px 12px",
-              cursor: !activeCustomer ? "not-allowed" : "pointer",
-              opacity: !activeCustomer ? 0.7 : 1,
-              fontSize: 15,
-              fontWeight: 600,
-            }}
-          >
-            Send Details to Customer
           </button>
         </div>
       </div>
