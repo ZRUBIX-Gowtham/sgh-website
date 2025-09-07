@@ -2,16 +2,21 @@
 
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic'; // Import dynamic from next/dynamic
+
 import HeroSection from './components/HeroSection';
 import { BookNowMobile, BookNow } from './components/BookNow';
-import { DepartmentSection } from './components/DepartmentSection';
 import { HomeAboutMobile, HomeAboutDesktop } from './components/HomeAbout';
 import { BookSection } from './components/BookSection';
-import { ExpertiseSectionMobile, ExpertiseSection } from './components/Expertise';
 import Map from './components/Map';
-import ServicesVariantC from './components/Services';
-import { MediaPanels } from './components/MediaPanels';
 import PartnerSection from './components/PartnersSec';
+
+// Dynamically import components that cause hydration issues with SSR disabled
+const DynamicDepartmentSection = dynamic(() => import('./components/DepartmentSection').then(mod => mod.DepartmentSection), { ssr: false });
+const DynamicServicesVariantC = dynamic(() => import('./components/Services'), { ssr: false });
+const DynamicExpertiseSection = dynamic(() => import('./components/Expertise').then(mod => mod.ExpertiseSection), { ssr: false });
+const DynamicExpertiseSectionMobile = dynamic(() => import('./components/Expertise').then(mod => mod.ExpertiseSectionMobile), { ssr: false });
+const DynamicMediaPanels = dynamic(() => import('./components/MediaPanels').then(mod => mod.MediaPanels), { ssr: false });
 
 
 function HomePage() {
@@ -49,15 +54,15 @@ function HomePage() {
       <HeroSection/>
       {/* {isMobile ? <HeroSectionMobile /> : <HeroSection />} */}
       {/* {isMobile ? <BookNowMobile /> : <BookNow/>} */}
-      <DepartmentSection/>
+      <DynamicDepartmentSection/> {/* Using dynamic import */}
       <PartnerSection/>
       {isMobile ? <HomeAboutMobile /> : <HomeAboutDesktop/>}
       {/* {isMobile ? <ServicesMobile /> : <ServicesDesktop/>} */}
-      <ServicesVariantC/>
+      <DynamicServicesVariantC/> {/* Using dynamic import */}
       <BookSection/>
-      {isMobile ? <ExpertiseSectionMobile /> : <ExpertiseSection/>}
+      {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>} {/* Using dynamic import */}
       {/* {isMobile ? <Carousel8Mobile /> : <Carousel8/>} */}
-      <MediaPanels/>
+      <DynamicMediaPanels/> {/* Using dynamic import */}
       <Map/>
       
       {/* <Newsletter/> */}

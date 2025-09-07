@@ -420,8 +420,7 @@ export function HeroSection() {
             transform: translateX(50%);
           }
           .extra-images {
-            left: 50%;
-            transform: translateX(-50%);
+           flex-direction : column;
             bottom: 10%;
           }
         }
