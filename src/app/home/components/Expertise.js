@@ -201,8 +201,7 @@ export const ExpertiseSection = () => {
                   key={idx}
                   className={`x-cell ${isActive ? 'active' : ''}`}
                   role="listitem"
-                  aria-pressed={isActive}
-                  onClick={() => setOpenIndex(idx)}
+                                   onClick={() => setOpenIndex(idx)}
                 >
                   <span
                     className="x-cell-icon"
@@ -586,7 +585,7 @@ export const ExpertiseSectionMobile = () => {
               key={idx}
               className={`m3-tab ${isActive ? 'active' : ''}`}
               role="listitem"
-              aria-pressed={isActive}
+            
               onClick={() => setOpenIndex(idx)}
             >
               <span

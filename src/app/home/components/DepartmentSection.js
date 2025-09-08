@@ -74,7 +74,6 @@ export const DepartmentSection = () => {
     if (el && el.scrollIntoView) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       el.classList.remove('animate-pop');
-      // eslint-disable-next-line no-unused-expressions
       el.offsetWidth;
       el.classList.add('animate-pop');
       setTimeout(() => el.classList.remove('animate-pop'), 600);
@@ -82,7 +81,6 @@ export const DepartmentSection = () => {
     const gallery = document.querySelector('.dept-image-gallery');
     if (gallery) {
       gallery.classList.remove('fade-in');
-      // eslint-disable-next-line no-unused-expressions
       gallery.offsetWidth;
       gallery.classList.add('fade-in');
     }

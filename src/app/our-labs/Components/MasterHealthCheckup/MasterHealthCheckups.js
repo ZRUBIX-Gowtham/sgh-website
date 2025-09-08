@@ -1,7 +1,7 @@
 // MasterHealthCheckups.jsx
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import PackageSelectionButtons from './PackageSelectionButtons'; // Import the new component
 
@@ -153,7 +153,7 @@ function MasterHealthCheckups() {
     // New state to store chat history for each package
     const [packageChatHistory, setPackageChatHistory] = useState({});
 
-    const faqData = [
+    const faqData = useMemo(() => [ // Wrapped faqData in useMemo
         {
             question: "Cardiac Master Health Checkup",
             answer: [
@@ -199,7 +199,7 @@ function MasterHealthCheckups() {
                 "Ultrasonagraphy Abdomen - Kub", "Vascular Doppler & Vibrotham", "Podiascan", "Eye Checkup",
             ]
         },
-    ];
+    ], []); // Empty dependency array means it's created once
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -207,40 +207,7 @@ function MasterHealthCheckups() {
         }
     }, [chatMessages]);
 
-    // Initial load: Display welcome for Cardiac Master Health Checkup
-    useEffect(() => {
-        const initialPackage = faqData[0]; // Cardiac Master Health Checkup
-        handlePackageSelect(initialPackage.question);
-    }, []); // Run only once on component mount
-
-    // Effect to save current chat state to history whenever it changes
-    useEffect(() => {
-        if (selectedPackage) {
-            setPackageChatHistory(prev => ({
-                ...prev,
-                [selectedPackage]: {
-                    chatMessages,
-                    currentStep,
-                    inputValue,
-                    form,
-                    inputFieldDisabled,
-                    isTyping,
-                }
-            }));
-        }
-    }, [chatMessages, currentStep, inputValue, form, inputFieldDisabled, selectedPackage]);
-
-    // Effect to toggle online status
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIsOnline(prev => !prev);
-        }, 3000); // Toggle every 3 seconds
-
-        return () => clearInterval(interval);
-    }, []);
-
-
-    const handlePackageSelect = (packageName) => {
+    const handlePackageSelect = useCallback((packageName) => { // Wrapped handlePackageSelect in useCallback
         // Save current package's state before switching
         if (selectedPackage && selectedPackage !== packageName) {
             setPackageChatHistory(prev => ({
@@ -278,7 +245,40 @@ function MasterHealthCheckups() {
             setInputFieldDisabled(true);
             setForm(prev => ({ ...prev, department: packageName, name: "", email: "", phone: "" }));
         }
-    };
+    }, [selectedPackage, chatMessages, currentStep, inputValue, form, inputFieldDisabled, packageChatHistory, Steps]); // Added dependencies for useCallback
+
+    // Initial load: Display welcome for Cardiac Master Health Checkup
+    useEffect(() => {
+        const initialPackage = faqData[0]; // Cardiac Master Health Checkup
+        handlePackageSelect(initialPackage.question);
+    }, [faqData, handlePackageSelect]); // Added faqData and handlePackageSelect to dependencies
+
+    // Effect to save current chat state to history whenever it changes
+    useEffect(() => {
+        if (selectedPackage) {
+            setPackageChatHistory(prev => ({
+                ...prev,
+                [selectedPackage]: {
+                    chatMessages,
+                    currentStep,
+                    inputValue,
+                    form,
+                    inputFieldDisabled,
+                    isTyping,
+                }
+            }));
+        }
+    }, [chatMessages, currentStep, inputValue, form, inputFieldDisabled, selectedPackage, isTyping]); // Added isTyping to dependencies
+
+    // Effect to toggle online status
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsOnline(prev => !prev);
+        }, 3000); // Toggle every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
 
     const handleChatInputSend = (text) => {
         const value = text.trim();
@@ -1091,7 +1091,7 @@ function MasterHealthCheckups() {
 
                 <div className={`master-health-chat-container ${isNightMode ? 'night-mode' : ''}`}>
                     <div className="master-health-chat-header">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Profile" className="profile-image" />
+                        <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Profile" className="profile-image" width={40} height={40} />
                         <div className="header-content">
                             {selectedPackage && (
                                 <div className="package-info-wrapper">
