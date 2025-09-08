@@ -1,8 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-import { HelmetProvider } from 'react-helmet-async';
-import ChatWidget from './chatbot/ChatWidget';
+import ChatWidget from './chatbot/page';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
