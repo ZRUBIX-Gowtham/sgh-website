@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 function LabIntroSection() {
   const content = {
@@ -73,9 +74,11 @@ function LabIntroSection() {
         ))}
       </div>
       <div className="lab-intro-image">
-        <img
+        <Image
           src={content.imageUrl}
           alt="Laboratory & Diagnostics"
+          width={500} // Placeholder width
+          height={300} // Placeholder height
         />
       </div>
     </section>

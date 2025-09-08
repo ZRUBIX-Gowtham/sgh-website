@@ -316,7 +316,8 @@ export function HeroSection() {
           position: relative;
           width: 700px;
           height: 650px;
-          right: 200px;
+          right: 70px;
+          bottom : 100px;
           overflow: visible;
           border-radius: inherit;
         }
@@ -508,8 +509,8 @@ export function HeroSection() {
         <div className="right-col-with-image">
           <div className="right-col">
             <div className="doctor-stage" aria-hidden="false">
-              <div className="doctor-figure">
-                <div className="doctor-image-wrap">
+              <div className="doctor-figure doctor-image-wrap">
+                {/* <div className="doctor-image-wrap"> */}
                   <Image
                     src={heroData.doctorImage.src}
                     alt={heroData.doctorImage.alt}
@@ -518,7 +519,7 @@ export function HeroSection() {
                     style={{ objectFit: 'cover' }}
                     priority
                   />
-                </div>
+                {/* </div> */}
               </div>
 
              

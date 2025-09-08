@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 function LabHeroSection() {
     const content = {
@@ -112,7 +113,7 @@ function LabHeroSection() {
                         <p>{content.description}</p>
                     </div>
                     <div className="image-container">
-                        <img src={content.imageUrl} alt={content.imageAlt} />
+                        <Image src={content.imageUrl} alt={content.imageAlt} width={600} height={400} />
                     </div>
                 </div>
             </section>

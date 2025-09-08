@@ -1,6 +1,9 @@
+// MasterHealthCheckups.jsx
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Image from 'next/image';
+import PackageSelectionButtons from './PackageSelectionButtons'; // Import the new component
 
 // Reusing the chat widget's message components for consistency
 function SystemMessage({ text }) {
@@ -10,12 +13,12 @@ function SystemMessage({ text }) {
         </div>
     );
 }
-function BotMessage({ text, list }) {
+function BotMessage({ text, list, isTyping }) {
     return (
 
         <div className="chat-bot-message-wrapper">
             <div className="chat-bot-avatar">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Bot Avatar" className="rounded-full" />
+                <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Bot Avatar" className="rounded-full" width={28} height={28} />
             </div>
             <div className="chat-bot-message">
                 {text && <p>{text}</p>}
@@ -26,6 +29,7 @@ function BotMessage({ text, list }) {
                         ))}
                     </ul>
                 )}
+
             </div>
         </div>
     );
@@ -61,9 +65,7 @@ function RowButtons({ items }) {
     );
 }
 
-function BottomInput({ disabled, onSend, placeholder }) {
-    const [value, setValue] = useState("");
-
+function BottomInput({ disabled, onSend, placeholder, value, setValue, inputDisabled }) {
     function send() {
         if (disabled) return;
         const v = value.trim();
@@ -76,7 +78,7 @@ function BottomInput({ disabled, onSend, placeholder }) {
         <div className="chat-bottom-input-container">
             <input
                 value={value}
-                disabled={disabled}
+                disabled={disabled || inputDisabled} // Disable input based on inputDisabled prop
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
                 placeholder={disabled ? "Type is disabled. Use the options above." : placeholder}
@@ -95,10 +97,43 @@ function BottomInput({ disabled, onSend, placeholder }) {
     );
 }
 
+// New component for other checkup suggestions
+function OtherCheckupSuggestions({ faqData, selectedPackage, onPackageSelect }) {
+    const otherPackages = faqData.filter(pkg => pkg.question !== selectedPackage);
+
+    if (otherPackages.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="other-checkup-suggestions">
+            <p className="suggestion-heading">View more checkup suggestions:</p>
+            <ul>
+                {otherPackages.map((pkg, index) => (
+                    <li key={index} onClick={() => onPackageSelect(pkg.question)}>
+                        {pkg.question} <i className="fa-solid fa-arrow-right"></i>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+
 function MasterHealthCheckups() {
     const [selectedPackage, setSelectedPackage] = useState(null);
     const [chatMessages, setChatMessages] = useState([]);
     const chatContainerRef = useRef(null);
+    const [inputValue, setInputValue] = useState(""); // State for the input field value
+    const [inputFieldDisabled, setInputFieldDisabled] = useState(false); // State to disable input field
+    const [isNightMode, setIsNightMode] = useState(false); // State for night mode
+    const [showNightModeOption, setShowNightModeOption] = useState(false); // State for showing night mode option
+    const [isTyping, setIsTyping] = useState(false); // New state for typing indicator
+    const [isOnline, setIsOnline] = useState(false); // New state for online status
+
+    const toggleNightMode = () => {
+        setIsNightMode(prevMode => !prevMode);
+    };
 
     const Steps = useMemo(() => ({
         WELCOME_SCREEN: "WELCOME_SCREEN",
@@ -114,6 +149,9 @@ function MasterHealthCheckups() {
     const [currentStep, setCurrentStep] = useState(Steps.WELCOME_SCREEN);
     const [form, setForm] = useState({ department: "", name: "", email: "", phone: "" });
     const [sending, setSending] = useState(false);
+
+    // New state to store chat history for each package
+    const [packageChatHistory, setPackageChatHistory] = useState({});
 
     const faqData = [
         {
@@ -172,47 +210,74 @@ function MasterHealthCheckups() {
     // Initial load: Display welcome for Cardiac Master Health Checkup
     useEffect(() => {
         const initialPackage = faqData[0]; // Cardiac Master Health Checkup
-        setSelectedPackage(initialPackage.question);
-        setForm(prev => ({ ...prev, department: initialPackage.question }));
-
-        setChatMessages([
-            { type: 'bot', text: `Welcome to ${initialPackage.question}!` },
-            { type: 'bot', text: "Press 'Start' to view details and make an enquiry." }
-        ]);
-        setCurrentStep(Steps.WELCOME_SCREEN);
+        handlePackageSelect(initialPackage.question);
     }, []); // Run only once on component mount
 
-    const handleStartClick = () => {
-        setChatMessages(prev => [...prev, { type: 'user', text: "Start" }]);
-        setTimeout(() => {
-            const packageDetails = faqData.find(pkg => pkg.question === selectedPackage);
-            setChatMessages(prev => [...prev,
-                { type: 'bot', text: `Here are the details for the ${selectedPackage}:` },
-                { type: 'bot', list: packageDetails.answer },
-                { type: 'bot', text: "Would you like to make an enquiry about this package? Click 'Book Now' below." }
-            ]);
-            setCurrentStep(Steps.DETAILS_SHOWN);
-        }, 500);
-    };
+    // Effect to save current chat state to history whenever it changes
+    useEffect(() => {
+        if (selectedPackage) {
+            setPackageChatHistory(prev => ({
+                ...prev,
+                [selectedPackage]: {
+                    chatMessages,
+                    currentStep,
+                    inputValue,
+                    form,
+                    inputFieldDisabled,
+                    isTyping,
+                }
+            }));
+        }
+    }, [chatMessages, currentStep, inputValue, form, inputFieldDisabled, selectedPackage]);
+
+    // Effect to toggle online status
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsOnline(prev => !prev);
+        }, 3000); // Toggle every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
 
     const handlePackageSelect = (packageName) => {
-        // Reset form and chat for new package selection
-        setForm({ department: packageName, name: "", email: "", phone: "" });
+        // Save current package's state before switching
+        if (selectedPackage && selectedPackage !== packageName) {
+            setPackageChatHistory(prev => ({
+                ...prev,
+                [selectedPackage]: {
+                    chatMessages,
+                    currentStep,
+                    inputValue,
+                    form,
+                    inputFieldDisabled,
+                }
+            }));
+        }
+
         setSelectedPackage(packageName);
+        setForm(prev => ({ ...prev, department: packageName }));
 
-        setChatMessages([
-            { type: 'bot', text: `Welcome to ${packageName}!` },
-            { type: 'bot', text: "Press 'Start' to view details and make an enquiry." }
-        ]);
-        setCurrentStep(Steps.WELCOME_SCREEN);
-    };
-
-    const handleBookNowClick = () => {
-        setChatMessages(prev => [...prev, { type: 'user', text: "Book Now" }]);
-        setTimeout(() => {
-            setChatMessages(prev => [...prev, { type: 'bot', text: "Great! What is your full name?" }]);
-            setCurrentStep(Steps.ASK_NAME);
-        }, 500);
+        // Load history for the new package or initialize if no history exists
+        if (packageChatHistory[packageName]) {
+            const history = packageChatHistory[packageName];
+            setChatMessages(history.chatMessages);
+            setCurrentStep(history.currentStep);
+            setInputValue(history.inputValue);
+            setForm(history.form);
+            setInputFieldDisabled(history.inputFieldDisabled);
+            setIsTyping(history.isTyping || false);
+        } else {
+            // Initialize new package chat
+            setChatMessages([
+                { type: 'bot', text: `Welcome to ${packageName}!` },
+                { type: 'bot', text: "Type 'Start' to view details and make an enquiry." }
+            ]);
+            setCurrentStep(Steps.WELCOME_SCREEN);
+            setInputValue("Start");
+            setInputFieldDisabled(true);
+            setForm(prev => ({ ...prev, department: packageName, name: "", email: "", phone: "" }));
+        }
     };
 
     const handleChatInputSend = (text) => {
@@ -220,14 +285,36 @@ function MasterHealthCheckups() {
         if (!value) return;
 
         setChatMessages(prev => [...prev, { type: 'user', text: value }]);
+        setInputValue(""); // Clear input after sending
+
+        // Add typing indicator
+        setChatMessages(prev => [...prev, { type: 'bot', text: "Typing...", isTyping: true }]);
+        setIsTyping(true);
 
         setTimeout(() => {
-            if (currentStep === Steps.ASK_NAME) {
+            setChatMessages(prev => prev.filter(msg => !msg.isTyping)); // Remove typing indicator
+            setIsTyping(false);
+            if (currentStep === Steps.WELCOME_SCREEN && value.toLowerCase() === "start") {
+                const packageDetails = faqData.find(pkg => pkg.question === selectedPackage);
+                setChatMessages(prev => [...prev,
+                    { type: 'bot', text: `Here are the details for the ${selectedPackage}:` },
+                    { type: 'bot', list: packageDetails.answer },
+                    { type: 'bot', text: "Would you like to make an enquiry about this package? Type 'Book Now' below." }
+                ]);
+                setCurrentStep(Steps.DETAILS_SHOWN);
+                setInputValue("Book Now");
+                setInputFieldDisabled(true);
+            } else if (currentStep === Steps.DETAILS_SHOWN && value.toLowerCase() === "book now") {
+                setChatMessages(prev => [...prev, { type: 'bot', text: "Great! What is your full name?" }]);
+                setCurrentStep(Steps.ASK_NAME);
+                setInputValue("");
+                setInputFieldDisabled(false);
+            } else if (currentStep === Steps.ASK_NAME) {
                 setForm(prev => ({ ...prev, name: value }));
                 setChatMessages(prev => [...prev, { type: 'bot', text: "Thanks, " + value + "! What is your email address?" }]);
                 setCurrentStep(Steps.ASK_EMAIL);
             } else if (currentStep === Steps.ASK_EMAIL) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Corrected regex
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(value)) {
                     setChatMessages(prev => [...prev, { type: 'bot', text: "Please enter a valid email address." }]);
                     return;
@@ -244,6 +331,11 @@ function MasterHealthCheckups() {
                 setForm(prev => ({ ...prev, phone: value }));
                 setChatMessages(prev => [...prev, { type: 'bot', text: "Please review your details before confirming your enquiry." }]);
                 setCurrentStep(Steps.REVIEW_ENQUIRY);
+                setInputValue("");
+                setInputFieldDisabled(false);
+            } else {
+                // Handle unexpected input or other steps where free typing is allowed
+                setChatMessages(prev => [...prev, { type: 'bot', text: "I'm not sure how to respond to that. Please follow the prompts." }]);
             }
         }, 500);
     };
@@ -287,13 +379,13 @@ function MasterHealthCheckups() {
     };
 
     // Determine if the chat input should be disabled
-    const isChatInputDisabled = ![Steps.ASK_NAME, Steps.ASK_EMAIL, Steps.ASK_PHONE].includes(currentStep);
+    const isChatInputDisabled = sending || [Steps.ENQUIRY_CONFIRMED, Steps.ERROR].includes(currentStep);
 
     return (
         <>
             <style>
                 {`
-               
+
 
                 .master-health-main-layout {
                     display: flex;
@@ -304,48 +396,16 @@ function MasterHealthCheckups() {
                     // max-width: 1400px;
                     margin: 50px auto;
                 }
-
-                .master-health-button-column {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 15px;
-                    width: 25%;
-                    min-width: 200px;
-                }
-
-                .master-health-package-button {
-                    background: #075e54; /* WhatsApp green */
-                    color: white;
-                    border: none;
-                    padding: 15px 20px;
-                    border-radius: 10px;
-                    font-size: 1.1em;
-                    font-weight: 600;
-                    cursor: pointer;
-                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                    transition: all 0.3s ease;
-                    text-align: center;
-                }
-
-                .master-health-package-button:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-                    background: #128c7e; /* Darker WhatsApp green */
-                }
-
-                .master-health-package-button.active {
-                    background: linear-gradient(45deg, #25d366, #128c7e);s
-                    color: white;
-                    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* More pronounced shadow */
-                    transform: scale(1.03); /* Slightly more pronounced scale */
-                    border: none; /* Remove border */
-                }
                     /* New styles for heading, subheading, and pills */
 .master-health-section-wrap {
     position: relative;
     overflow: clip;
     background: transparent;
     isolation: isolate;
+}
+    .text-white {
+    color: white;
+    cursor: pointer;
 }
 
 .master-health-section-content {
@@ -425,6 +485,94 @@ function MasterHealthCheckups() {
                     height: 600px; /* Fixed height for chat container */
                 }
 
+                .master-health-chat-container.night-mode {
+                    background-color: #000000; /* Black background for night mode */
+                    color: #ffffff; /* White text for night mode */
+                }
+
+                .master-health-chat-container.night-mode .master-health-chat-header {
+                    background: #1a1a1a; /* Darker header for night mode */
+                    color: #ffffff;
+                }
+
+                .master-health-chat-container.night-mode .master-health-chat-messages {
+                    background-color: #000000; /* Black background for messages in night mode */
+                    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp background image */
+                    background-size: contain;
+                }
+
+                .master-health-chat-container.night-mode .chat-bot-message {
+                    background: #333333; /* Darker bot message background */
+                    color: #ffffff;
+                    border-color: #555555;
+                }
+
+                .master-health-chat-container.night-mode .chat-user-message {
+                    background: #075e54; /* WhatsApp green for user messages in night mode */
+                    color: #ffffff;
+                    border-color: #075e54;
+                }
+
+                .master-health-chat-container.night-mode .chat-system-message {
+                    background: #555555;
+                    color: #ffffff;
+                }
+
+                .master-health-chat-container.night-mode .chat-bottom-input-container {
+                    background: #1a1a1a;
+                    border-top-color: #333333;
+                }
+
+                .master-health-chat-container.night-mode .chat-bottom-input {
+                    background: #333333;
+                    color: #ffffff;
+                    border-color: #555555;
+                }
+
+                .master-health-chat-container.night-mode .chat-bottom-input::placeholder {
+                    color: #cccccc;
+                }
+
+                .master-health-chat-container.night-mode .chat-pill-button {
+                    background: #333333;
+                    color: #ffffff;
+                    border-color: #555555;
+                }
+
+                .master-health-chat-container.night-mode .chat-pill-button:hover:not(:disabled) {
+                    background-color: #555555;
+                }
+
+                .master-health-chat-container.night-mode .chat-review-card {
+                    background: #333333;
+                    color: #ffffff;
+                    border-color: #555555;
+                }
+
+                .master-health-chat-container.night-mode .chat-review-card h4 {
+                    color: #ffffff;
+                }
+
+                .master-health-chat-container.night-mode .chat-review-card strong {
+                    color: #ffffff;
+                }
+
+                .master-health-chat-container.night-mode .chat-confirm-button {
+                    background: #075e54;
+                }
+
+                .master-health-chat-container.night-mode .chat-send-button {
+                    background: #075e54;
+                }
+
+                .master-health-chat-container.night-mode .chat-send-button:hover:not(:disabled) {
+                    background: #054a42;
+                }
+
+                .master-health-chat-container.night-mode .master-health-chat-header .package-info i {
+                    color: #ffffff; /* White checkmark in night mode */
+                }
+
                 .master-health-chat-header {
                     background: #075e54; /* WhatsApp green header */
                     color: white;
@@ -468,7 +616,7 @@ function MasterHealthCheckups() {
                     flex-grow: 1;
                     padding: 20px;
                     overflow-y: auto; /* Make messages scrollable */
-                    
+
                     flex-direction: column;
                     gap: 10px;
                     background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp background image */
@@ -499,7 +647,7 @@ function MasterHealthCheckups() {
                 .master-health-chat-messages:hover::-webkit-scrollbar-thumb {
                     background-color: rgba(0, 0, 0, 0.4); /* Darker on hover */
                 }
-                
+
                 /* Chat Message Styles (from provided chat widget) */
                 .chat-system-message {
                     font-size: 12px;
@@ -598,7 +746,7 @@ function MasterHealthCheckups() {
                 .master-health-start-button-wrapper {
                         display: flex;
     justify-content: center;
-    
+
     margin-top: 180px;
     margin-left: 400px;
                 }
@@ -769,9 +917,6 @@ function MasterHealthCheckups() {
 
                 /* Responsive adjustments */
                 @media (max-width: 1024px) {
-                    .master-health-button-column {
-                        width: 30%;
-                    }
                     .master-health-chat-container {
                         width: 40%;
                     }
@@ -799,16 +944,6 @@ function MasterHealthCheckups() {
     margin-top: 115px;
     margin-left: 60px;
     }
-                    .master-health-button-column {
-                        width: 90%;
-                        flex-direction: row;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                    }
-                    .master-health-package-button {
-                        width: 45%;
-                        margin: 5px;
-                    }
                     .master-health-chat-container {
                         width: 90%;
                         max-width: none;
@@ -816,12 +951,119 @@ function MasterHealthCheckups() {
                 }
 
                 @media (max-width: 480px) {
-                    .master-health-button-column {
-                        flex-direction: column;
-                    }
-                    .master-health-package-button {
-                        width: 100%;
-                    }
+                }
+
+                /* Styles for OtherCheckupSuggestions */
+                .other-checkup-suggestions {
+                    margin-top: 20px;
+                    padding: 15px;
+                    background-color: #e7f3ff; /* Light blue background */
+                    border-radius: 10px;
+                    border: 1px solid #cce0ff;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                }
+
+                .master-health-chat-container.night-mode .other-checkup-suggestions {
+                    background-color: #222222;
+                    border-color: #444444;
+                    color: #ffffff;
+                }
+
+                .other-checkup-suggestions .suggestion-heading {
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    color: #333333;
+                }
+
+                .master-health-chat-container.night-mode .other-checkup-suggestions .suggestion-heading {
+                    color: #ffffff;
+                }
+
+                .other-checkup-suggestions ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .other-checkup-suggestions li {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #e0e0e0;
+                    cursor: pointer;
+                    color: #007bff; /* Blue text for links */
+                    transition: background-color 0.2s ease;
+                }
+
+                .master-health-chat-container.night-mode .other-checkup-suggestions li {
+                    border-bottom-color: #555555;
+                    color: #87ceeb; /* Lighter blue for night mode links */
+                }
+
+                .other-checkup-suggestions li:last-child {
+                    border-bottom: none;
+                }
+
+                .other-checkup-suggestions li:hover {
+                    background-color: #f0f8ff; /* Lighter blue on hover */
+                }
+
+                .master-health-chat-container.night-mode .other-checkup-suggestions li:hover {
+                    background-color: #333333;
+                }
+
+                .other-checkup-suggestions li i {
+                    margin-left: 10px;
+                    color: #007bff;
+                }
+
+                .master-health-chat-container.night-mode .other-checkup-suggestions li i {
+                    color: #87ceeb;
+                }
+
+                /* New styles for online status and package name animation */
+                .package-info-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    overflow: hidden; /* Hide overflow during transition */
+                    height: 60px; /* Adjusted height for smoother transition */
+                    justify-content: center; /* Center content vertically */
+                    transition: height 0.3s ease-in-out;
+                }
+
+                .package-name {
+                    font-size: 1em;
+                    font-weight: bold;
+                    margin: 0;
+                    display: flex; /* To align text and icon */
+                    align-items: center;
+                    gap: 5px; /* Space between text and tick */
+                    transition: transform 0.3s ease-in-out;
+                }
+
+                .package-name.active {
+                    transform: translateY(-5px); /* Move up when online is active */
+                }
+
+                .online-status {
+                    font-size: 0.6em;
+                    color: #dcf8c6; /* Light green for online status */
+                    opacity: 0;
+                    height: 0;
+                    overflow: hidden;
+                    transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out, transform 0.3s ease-in-out;
+                }
+
+                .online-status.active {
+                    opacity: 1;
+                    height: 18px; /* Adjust height as needed for the text */
+                    transform: translateY(-5px); /* Move up with package name */
+                }
+
+                .master-health-chat-container.night-mode .online-status {
+                    color: #ffffffdd; /* Darker green for night mode online status */
                 }
                 `}
             </style>
@@ -841,54 +1083,55 @@ function MasterHealthCheckups() {
             </div>
 
             <div className="master-health-main-layout">
-                <div className="master-health-button-column">
-                    {faqData.map((item, index) => ( // Changed slice to map all faqData
-                        <button
-                            key={index}
-                            className={`master-health-package-button ${selectedPackage === item.question ? 'active' : ''}`}
-                            onClick={() => handlePackageSelect(item.question)}
-                        >
-                            {item.question}
-                        </button>
-                    ))}
-                </div>
+                <PackageSelectionButtons
+                    faqData={faqData}
+                    selectedPackage={selectedPackage}
+                    onPackageSelect={handlePackageSelect}
+                />
 
-                <div className="master-health-chat-container">
+                <div className={`master-health-chat-container ${isNightMode ? 'night-mode' : ''}`}>
                     <div className="master-health-chat-header">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Profile" className="profile-image" />
                         <div className="header-content">
-
                             {selectedPackage && (
-                                <p className="package-info">
-                                    {selectedPackage}
-                                    <i className="fa-solid fa-check-circle"></i>
-                                </p>
+                                <div className="package-info-wrapper">
+                                    <p className={`package-name ${isOnline ? 'active' : ''}`}>
+                                        {selectedPackage} <i className="fa-solid fa-check-circle text-blue-400"></i>
+                                    </p>
+                                    <span className={`online-status ${isOnline ? 'active' : ''}`}>
+                                        online
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="relative">
+                            <button onClick={() => setShowNightModeOption(prev => !prev)} className="text-white text-xl focus:outline-none">
+                                <i className="fa-solid fa-ellipsis-v"></i>
+                            </button>
+                            {showNightModeOption && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                                    <button
+                                        onClick={() => {
+                                            toggleNightMode();
+                                            setShowNightModeOption(false);
+                                        }}
+                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    >
+                                        {isNightMode ? "Day Mode" : "Night Mode"}
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
                     <div className="master-health-chat-messages" ref={chatContainerRef}>
                         {chatMessages.map((msg, index) =>
                             msg.type === "system" ? <SystemMessage key={index} text={msg.text} /> :
-                            msg.type === "bot" ? <BotMessage key={index} text={msg.text} list={msg.list} /> :
+                            msg.type === "bot" ? <BotMessage key={index} text={msg.text} list={msg.list} isTyping={msg.isTyping} /> :
                             <UserMessage key={index} text={msg.text} />
                         )}
 
-                        {currentStep === Steps.WELCOME_SCREEN && (
-                            <div className="master-health-start-button-wrapper">
-                                <div className="glass-effect-card">
-                                    <p>Would you like to send?</p>
-                                    <button className="master-health-start-button" onClick={handleStartClick}>Start</button>
-                                </div>
-                            </div>
-                        )}
-
-                        {currentStep === Steps.DETAILS_SHOWN && (
-                            <div className="master-health-fab-book-now-wrapper">
-                                <button className="master-health-fab-book-now" onClick={handleBookNowClick}>
-                                    <i className="fa-brands fa-whatsapp"></i> Book Now
-                                </button>
-                            </div>
-                        )}
+                        {/* Removed the "Would you like to send? Start" button */}
+                        {/* Removed the "Book Now" FAB button */}
 
                         {currentStep === Steps.REVIEW_ENQUIRY && (
                             <div className="chat-review-card">
@@ -905,6 +1148,8 @@ function MasterHealthCheckups() {
                                             setChatMessages(prev => [...prev, { type: 'bot', text: "Okay, let's re-enter your name. What is your full name?" }]);
                                             setCurrentStep(Steps.ASK_NAME);
                                             setForm(prev => ({ ...prev, name: "", email: "", phone: "" })); // Clear form for re-entry
+                                            setInputValue(""); // Clear input
+                                            setInputFieldDisabled(false); // Enable input
                                         }}
                                     >
                                         Edit Details
@@ -919,11 +1164,22 @@ function MasterHealthCheckups() {
                                 </div>
                             </div>
                         )}
+
+                        {currentStep === Steps.ENQUIRY_CONFIRMED && (
+                            <OtherCheckupSuggestions
+                                faqData={faqData}
+                                selectedPackage={selectedPackage}
+                                onPackageSelect={handlePackageSelect}
+                            />
+                        )}
                     </div>
                     <BottomInput
                         disabled={isChatInputDisabled}
                         onSend={handleChatInputSend}
                         placeholder="Type your message here..."
+                        value={inputValue}
+                        setValue={setInputValue}
+                        inputDisabled={inputFieldDisabled} // Pass inputDisabled prop
                     />
                 </div>
             </div>

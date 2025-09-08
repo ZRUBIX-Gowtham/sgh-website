@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 import LabHeroSection from './Components/LabheroSection';
 import LabIntroSection from './Components/labintrosection';
-import MasterHealthCheckups from './Components/MasterHealthCheckups';
+import MasterHealthCheckups from './Components/MasterHealthCheckup/MasterHealthCheckups';
 import ListofMedicalTests from './Components/ListofMedicalTests';
 import Map from '../home/components/Map';
 
