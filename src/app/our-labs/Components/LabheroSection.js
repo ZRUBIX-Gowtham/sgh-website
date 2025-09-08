@@ -6,7 +6,8 @@ function LabHeroSection() {
         title: "Discover Our Laboratory",
         description: "At Gopi Hospital, our advanced laboratory is equipped with cutting-edge technology and staffed by experienced professionals dedicated to accurate and timely diagnostic testing. We offer a comprehensive range of lab services to support precise diagnoses and effective treatment plans.",
         imageUrl: "https://prohealth-react.vercel.app/images/doctors/banner_img.png",
-        imageAlt: "Modern laboratory equipment or a lab technician at work" // Updated alt text for relevance
+        imageAlt: "Modern laboratory equipment or a lab technician at work",
+        pills: ['Blood Testing', 'Pathology', 'Microbiology', 'Genetic Screening'] // Updated pills data
     };
 
     return (
@@ -38,10 +39,15 @@ function LabHeroSection() {
                     color: #2c3e50;
                 }
                 .text-container h3 {
-                    font-size: 48px;
-                    margin-bottom: 20px;
-                    line-height: 1.2;
-                    font-weight: bold;
+                    font-size: clamp(28px, 4vw, 44px);
+                    line-height: 1.1;
+                    font-weight: 900;
+                    letter-spacing: -0.02em;
+                    background:linear-gradient(92deg, #007bff 0%, #28a745 100%);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                    margin: 0 0 10px;
                 }
                 .text-container p {
                     font-size: 18px;
@@ -62,6 +68,28 @@ function LabHeroSection() {
                     height: auto;
                     display: block;
                 }
+
+                /* Pills styling */
+                .pills {
+                  display: flex;
+                  gap: 10px;
+                  flex-wrap: wrap;
+                  margin-bottom: 14px;
+                }
+                .pill {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  font-weight : 500;
+                  padding: 6px 10px;
+                  border-radius: 999px;
+                  font-size: 12px;
+                  letter-spacing: 0.02em;
+                  background: rgba(47, 128, 237, 0.08);
+                  color: #1f4e9b;
+                  border: 1px solid rgba(47, 128, 237, 0.18);
+                }
+
                 /* Responsive adjustments */
                 @media (max-width: 992px) {
                     .prohealth-content {
@@ -82,6 +110,9 @@ function LabHeroSection() {
                     .image-container {
                         justify-content: center;
                         align-items: center;
+                    }
+                    .pills {
+                        justify-content: center;
                     }
                 }
                 @media (max-width: 768px) {
@@ -109,6 +140,13 @@ function LabHeroSection() {
             <section className="prohealth-section">
                 <div className="prohealth-content">
                     <div className="text-container">
+                        <div className="pills" aria-label="Specialties">
+                            {content.pills.map((pill, idx) => (
+                                <span className="pill" key={idx}>
+                                    {pill}
+                                </span>
+                            ))}
+                        </div>
                         <h3>{content.title}</h3>
                         <p>{content.description}</p>
                     </div>

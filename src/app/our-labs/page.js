@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import LabHeroSection from './Components/LabheroSection';
 import LabIntroSection from './Components/labintrosection';
 import MasterHealthCheckups from './Components/MasterHealthCheckup/MasterHealthCheckups';
-import ListofMedicalTests from './Components/ListofMedicalTests';
+import ListofMedicalTests from './Components/List of Medical Test/ListofMedicalTest';
 import Map from '../home/components/Map';
 
 
@@ -42,12 +42,17 @@ function Labs() {
 
   return (
     <>
-      
+      <style jsx>{`
+        .map-section-gradient {
+          background: linear-gradient(92deg, #007bff 0%, #28a745 100%);
+        }
+      `}</style>
       <LabHeroSection/>
       <LabIntroSection/>
       <MasterHealthCheckups/>
       <ListofMedicalTests/>
-      <Map/>
+        <Map headingGradient="linear-gradient(92deg, #007bff 0%, #28a745 100%)" />
+      
       {/* <CommonFooter/> */}
     </>
   );

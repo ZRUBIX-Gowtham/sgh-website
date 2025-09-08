@@ -97,7 +97,7 @@ const HealthPackageForm = ({ isOpen, onClose, onSubmit }) => {
     );
 };
 
-function ListofMedicalTests() {
+function TestListofMedicalTests() {
     const [openIndex, setOpenIndex] = useState(0); // First FAQ open by default
     const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -546,4 +546,4 @@ function ListofMedicalTests() {
     );
 }
 
-export default ListofMedicalTests;
+export default TestListofMedicalTests;

@@ -9,7 +9,8 @@ function LabIntroSection() {
       "Our cutting-edge reference lab has received NABL accreditation. The accreditations enable us to fulfill our commitment to offering the greatest patient care. The findings of the laboratory tests have an impact on many aspects of our everyday lives, and having an international accreditation in medical testing laboratories helps to ensure that our patients receive consistent, accurate, and high-quality results.",
       "In the Department of Laboratory & Diagnostics, our skilled nursing, and paramedical professionals uphold a tradition of quality. We specialize in providing both general and targeted diagnostic services. To deliver prompt and precise findings, we collaborate with our doctors."
     ],
-    "imageUrl": "https://salemgopihospital.in/wp-content/uploads/2022/08/doctor-analyzing-blood-samples-with-microscope-min.jpg"
+    "imageUrl": "https://salemgopihospital.in/wp-content/uploads/2022/08/doctor-analyzing-blood-samples-with-microscope-min.jpg",
+    "pills": ['NABL Accredited', '24/7 Services'] // Only two relevant pills
   };
 
   return (
@@ -22,7 +23,7 @@ function LabIntroSection() {
             align-items: center;
             justify-content: center;
             padding: 2rem;
-           color: #2c3e50;
+            color: #2c3e50;
           }
 
           .lab-intro-content {
@@ -30,17 +31,24 @@ function LabIntroSection() {
             padding: 1rem;
           }
 
+          /* Heading style with lab-like gradient */
           .lab-intro-content h3 {
-            font-size: 2.25rem; /* Equivalent to text-3xl */
-            font-weight: bold;
-            margin-bottom: 1rem;
+            font-size: clamp(28px, 4vw, 44px);
+            line-height: 1.1;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            background: linear-gradient(92deg, #007bff 0%, #28a745 100%); /* Blue to Green Gradient */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0 0 10px;
           }
 
           .lab-intro-content p {
             margin-bottom: 1rem;
             font-size: 1.125rem; /* Equivalent to text-lg */
             line-height: 1.625; /* Equivalent to leading-relaxed */
-             color : #555;
+            color : #555;
           }
 
           .lab-intro-image {
@@ -55,6 +63,27 @@ function LabIntroSection() {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-lg */
           }
 
+          /* Pills styling with lab-like gradient */
+          .pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+          }
+          .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            background: linear-gradient(92deg, rgba(0, 123, 255, 0.15) 0%, rgba(40, 167, 69, 0.15) 100%); /* Softer Blue to Green Gradient */
+            color: #0056b3; /* Darker blue for text */
+            border: 1px solid rgba(0, 123, 255, 0.3); /* Border matching the gradient start */
+          }
+
           @media (max-width: 768px) {
             .lab-intro-section {
               flex-direction: column;
@@ -62,10 +91,20 @@ function LabIntroSection() {
             .lab-intro-content, .lab-intro-image {
               width: 100%;
             }
+            .pills {
+              justify-content: center; /* Center pills on smaller screens */
+            }
           }
         `}
       </style>
       <div className="lab-intro-content">
+        <div className="pills" aria-label="Services">
+          {content.pills.map((pill, idx) => (
+            <span className="pill" key={idx}>
+              {pill}
+            </span>
+          ))}
+        </div>
         <h3>{content.title}</h3>
         {content.paragraphs.map((paragraph, index) => (
           <p key={index}>

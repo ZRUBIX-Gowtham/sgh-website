@@ -3,24 +3,24 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
-import PackageSelectionButtons from './PackageSelectionButtons'; // Import the new component
+import MedicalPackageSelectionButtons from './MedicalPakageselection';
+
 
 // Reusing the chat widget's message components for consistency
 function SystemMessage({ text }) {
     return (
-        <div className="chat-system-message">
+        <div className="twitter-system-message">
             {text}
         </div>
     );
 }
 function BotMessage({ text, list, isTyping }) {
     return (
-
-        <div className="chat-bot-message-wrapper">
-            <div className="chat-bot-avatar">
+        <div className="twitter-bot-message-wrapper">
+            <div className="twitter-bot-avatar">
                 <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Bot Avatar" className="rounded-full" width={28} height={28} />
             </div>
-            <div className="chat-bot-message">
+            <div className="twitter-bot-message">
                 {text && <p>{text}</p>}
                 {list && (
                     <ul>
@@ -29,15 +29,15 @@ function BotMessage({ text, list, isTyping }) {
                         ))}
                     </ul>
                 )}
-
+                {isTyping && <span className="twitter-typing-indicator"></span>}
             </div>
         </div>
     );
 }
 function UserMessage({ text }) {
     return (
-        <div className="chat-user-message-wrapper">
-            <div className="chat-user-message">
+        <div className="twitter-user-message-wrapper">
+            <div className="twitter-user-message">
                 {text}
             </div>
         </div>
@@ -49,7 +49,7 @@ function PillButton({ label, onClick, disabled }) {
         <button
             onClick={onClick}
             disabled={disabled}
-            className="chat-pill-button"
+            className="twitter-pill-button"
         >
             {label}
         </button>
@@ -57,7 +57,7 @@ function PillButton({ label, onClick, disabled }) {
 }
 function RowButtons({ items }) {
     return (
-        <div className="chat-row-buttons">
+        <div className="twitter-row-buttons">
             {items.map((it, idx) => (
                 <PillButton key={idx} label={it.label} onClick={it.onClick} disabled={it.disabled} />
             ))}
@@ -75,23 +75,22 @@ function BottomInput({ disabled, onSend, placeholder, value, setValue, inputDisa
     }
 
     return (
-        <div className="chat-bottom-input-container">
+        <div className="twitter-bottom-input-container">
             <input
                 value={value}
                 disabled={disabled || inputDisabled} // Disable input based on inputDisabled prop
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
                 placeholder={disabled ? "Type is disabled. Use the options above." : placeholder}
-                className="chat-bottom-input"
+                className="twitter-bottom-input"
             />
             <button
                 onClick={send}
                 disabled={disabled}
                 aria-label="Send message"
-                className="chat-send-button"
+                className="twitter-send-button"
             >
                 <i className="fa-solid fa-paper-plane" />
-                <span>Send</span>
             </button>
         </div>
     );
@@ -106,7 +105,7 @@ function OtherCheckupSuggestions({ faqData, selectedPackage, onPackageSelect }) 
     }
 
     return (
-        <div className="other-checkup-suggestions">
+        <div className="twitter-other-checkup-suggestions">
             <p className="suggestion-heading">View more checkup suggestions:</p>
             <ul>
                 {otherPackages.map((pkg, index) => (
@@ -120,7 +119,7 @@ function OtherCheckupSuggestions({ faqData, selectedPackage, onPackageSelect }) 
 }
 
 
-function MasterHealthCheckups() {
+function ListofMedicalTests() {
     const [selectedPackage, setSelectedPackage] = useState(null);
     const [chatMessages, setChatMessages] = useState([]);
     const chatContainerRef = useRef(null);
@@ -153,50 +152,155 @@ function MasterHealthCheckups() {
     // New state to store chat history for each package
     const [packageChatHistory, setPackageChatHistory] = useState({});
 
-    const faqData = [
+     const faqData = [
         {
-            question: "Cardiac Master Health Checkup",
+            question: "Hematology",
             answer: [
-                "Hemogram (CBC)", "Blood Group", "ESR", "Blood Glucose - (F)", "Blood Glucose (2 Hrs PP)",
-                "HbA1c (Glycated Hemoglobin A1c)", "Urea", "Creatinine", "Uric Acid", "Lipid Profile",
-                "Sodium", "Potassium", "Bilirubin - Total & Direct", "Total Protein And A/G Ratio",
-                "AST (SGOT)", "ALT (SGPT)", "Hs Crp", "Urine Micro Albumin / Creatinine Ratio",
-                "Vitamin D", "FT3, FT4, TSH", "Urine Complete Analysis", "XRAY CHEST PA",
-                "Ultrasonagraphy Abdomen - Kub", "Echo Cardiogram", "ECG", "Eye Checkup",
+                "Hemoglobin (Hb)",
+                "Total WBC Count (TC)",
+                "Differential Count (DC)",
+                "Packed Cell Volume",
+                "ESR",
+                "Absolute Eosinophil Count",
+                "Rbc Count",
+                "Absolute Lymphocyte Count",
+                "Platelet Count",
+                "Malarial Parasites (Card)",
+                "Smear For MP",
+                "Smear For Microfilaria",
+                "Mantoux Test (MX)",
+                "Grouping & Rh Typing",
+                "Prothrombin Time (PT) With INR",
+                "APTT",
+                "D-Dimer",
+                "Bleeding Time / Clotting Time",
+                "PERIPHERAL SMEAR STUDY",
             ]
         },
         {
-            question: "Diabetic Master Health Checkup",
+            question: "BioChemistry",
             answer: [
-                "Hemogram (CBC)", "Blood Group", "ESR", "Blood Glucose - (F)", "Blood Glucose (2 Hrs PP)",
-                "HbA1c (Glycated Hemoglobin A1c)", "Urea", "Creatinine", "Uric Acid", "Lipid Profile",
-                "Sodium", "Potassium", "Bilirubin - Total & Direct", "Total Protein And A/G Ratio",
-                "AST (SGOT)", "ALT (SGPT)", "Urine Micro Albumin / Creatinine Ratio",
-                "FT3, FT4, TSH", "Urine Complete Analysis", "XRAY CHEST PA", "ECG",
-                "Ultrasonagraphy Abdomen - Kub", "Vascular Doppler & Vibrotham", "Podiascan", "Eye Checkup",
+                "Blood Glucose - F",
+                "Glucometer Sugar - F",
+                "Blood Glucose - PP",
+                "Glucometer Sugar - PP",
+                "Blood Glucose - R",
+                "Glucometer Sugar - R",
+                "HbA1c (Glycated Hemoglobin A1c)",
+                "Urea",
+                "Creatinine",
+                "Uric Acid",
+                "Sodium",
+                "Chloride",
+                "Potassium",
+                "Bicarbonate",
+                "Total Cholesterol",
+                "Triglycerides",
+                "HDL Cholesterol",
+                "LDL Cholesterol",
+                "Bilirubin Total & Direct",
+                "Total Protein And A/G Ratio",
+                "AST (SGOT)",
+                "ALT (SGPT)",
+                "Alkaline Phosphates",
+                "GGTP",
+                "Calcium",
+                "Phosphorus",
+                "Magnesium",
+                "CPK - MB",
+                "Complement C3",
+                "CPK - Total",
+                "Complement C4",
+                "Troponin - I",
+                "NT-Pro BNP",
+                "Hs CRP",
+                "Procalcitonin (PCT)",
+                "LDH",
+                "Iron TIBC & & Transferrin Saturation",
+                "Amylase",
+                "Blood Ketone",
+                "Lipase",
+                "Ammonia",
+                "Cholinesterase",
+                "Arterial Blood Gas Analysis (ABG)",
+                "Urine Micro Albumin",
+                "Urine Creatinine",
+                "Urine Micro Albumin / Creatinine Ratio",
+                "Urine Protein / Creatinine Ratio",
+                "24 Hr Urine Protein",
+                "24 Hr Urine BIOCHEMISTRY",
             ]
         },
         {
-            question: "General Master Health Checkup",
+            question: "Serology",
             answer: [
-                "Hemogram (CBC)", "Blood Group", "ESR", "Blood Glucose - (F)", "Blood Glucose (2 Hrs PP)",
-                "HbA1c (Glycated Hemoglobin A1c)", "Urea", "Creatinine", "Uric Acid", "Lipid Profile",
-                "Sodium", "Potassium", "Bilirubin - Total & Direct", "Total Protein And A/G Ratio",
-                "AST (SGOT)", "ALT (SGPT)", "Urine Micro Albumin / Creatinine Ratio",
-                "FT3, FT4, TSH", "Urine Complete Analysis", "XRAY CHEST PA", "ECG",
+                "Rheumatoid Factor (RA)",
+                "ASO TITRE",
+                "C-Reactive Protein (CPR)",
+                "WIDAL",
+                "Weil Felix",
+                "Dengue - Ns1, 1gM, 1gG",
+                "Leptospirosis",
+                "Chikungunya",
+                "Helicobacter Pylori",
+                "HIV",
+                "HBsAg",
+                "HCV",
             ]
         },
         {
-            question: "Executive Master Health Checkup",
+            question: "Cinical Pathology",
             answer: [
-                "Hemogram (CBC)", "Blood Group", "ESR", "Blood Glucose - (F)", "Blood Glucose (2 Hrs PP)",
-                "HbA1c (Glycated Hemoglobin A1c)", "Urea", "Creatinine", "Uric Acid", "Lipid Profile",
-                "Sodium, Potassium", "Bilirubin - Total & Direct",
-                "Total Protein And A/G Ratio", "AST (SGOT)", "ALT (SGPT)", "Hs Crp",
-                "Urine Micro Albumin / Creatinine Ratio", "Vitamin D", "FT3, FT4, TSH",
-                "HBsAg, HCV", "PSA (Prostate Specific Antigen) (Male)", "Urine Complete Analysis",
-                "XRAY CHEST PA", "ECG", "Echo Cardiogram", "Uroflow Meter",
-                "Ultrasonagraphy Abdomen - Kub", "Vascular Doppler & Vibrotham", "Podiascan", "Eye Checkup",
+                "Urine Sugar (F) (PP)",
+                "Occult Blood",
+                "Urine Acetone (Ketone)",
+                "SEMEN ANALYSIS",
+                "Urine Pregnancy Test",
+            ]
+        },
+        {
+            question: "MicroBiology",
+            answer: [
+                "Gram's Staining",
+                "Culture & Sensitivity",
+                "AFB Staining",
+                "Fungal Staining",
+            ]
+        },
+        {
+            question: "EndoCrinology",
+            answer: [
+                "TSH",
+                "FT3",
+                "FT4",
+                "Ferritin",
+                "25-Hydroxy Vitamin D",
+                "Vitamin B12",
+                "SARS Covid 2 IgG",
+                "PSA (Prostate Specific Antigen)",
+                "Folic Acid (Folate)",
+                "SARS Covid 2 IgM",
+                "PTH [Intact Para Thyroid Hormone]",
+            ]
+        },
+        {
+            question: "Body Fluid",
+            answer: [
+                "Cell Count",
+                "Sugar",
+                "Protein",
+                "LDH",
+                "Amylase",
+                "ADA",
+            ]
+        },
+        {
+            question: "Pathology",
+            answer: [
+                "FNAC",
+                "PAP Smear",
+                "Cytology",
+                "Biopsy",
             ]
         },
     ];
@@ -297,9 +401,9 @@ function MasterHealthCheckups() {
             if (currentStep === Steps.WELCOME_SCREEN && value.toLowerCase() === "start") {
                 const packageDetails = faqData.find(pkg => pkg.question === selectedPackage);
                 setChatMessages(prev => [...prev,
-                { type: 'bot', text: `Here are the details for the ${selectedPackage}:` },
-                { type: 'bot', list: packageDetails.answer },
-                { type: 'bot', text: "Would you like to make an enquiry about this package? Type 'Book Now' below." }
+                    { type: 'bot', text: `Here are the details for the ${selectedPackage}:` },
+                    { type: 'bot', list: packageDetails.answer },
+                    { type: 'bot', text: "Would you like to make an enquiry about this package? Type 'Book Now' below." }
                 ]);
                 setCurrentStep(Steps.DETAILS_SHOWN);
                 setInputValue("Book Now");
@@ -385,342 +489,333 @@ function MasterHealthCheckups() {
         <>
             <style>
                 {`
-
-
-                .master-health-main-layout {
+                /* General Layout */
+                .twitter-main-layout {
                     display: flex;
                     justify-content: center;
-                    background-color: #ffffffff;
+                    background-color: #ffffffff; /* Light grey background */
                     gap: 20px;
-                    // padding: 20px;
-                    // max-width: 1400px;
                     margin: 0px auto 40px;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 }
-                    /* New styles for heading, subheading, and pills */
-.master-health-section-wrap {
-    position: relative;
-    overflow: clip;
-    background: transparent;
-    isolation: isolate;
-}
-    .text-white {
-    color: white;
-    cursor: pointer;
-}
 
-.master-health-section-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 25px 25px; /* Adjust padding as needed */
-    color: var(--ink); /* Assuming --ink is defined in your global CSS or you can define it here */
-    z-index: 1;
-}
-
-.master-health-pills {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: left;
-    margin-bottom: 18px;
-}
-.master-health-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-weight : 500;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    background: rgba(47, 128, 237, 0.10);
-    color: #1f4e9b;
-    border: 1px solid rgba(47, 128, 237, 0.22);
-    width: fit-content;
-    align-self: flex-start;
-}
-
-.master-health-heading {
-    margin: 0 0 8px;
-    font-size: 40px;
-    line-height: 1.08;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    text-align: left;
-    background: linear-gradient(92deg, #007bff 0%, #28a745 40%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-@media (max-width: 768px) {
-    .master-health-heading { font-size: 34px; }
-}
-@media (max-width: 480px) {
-    .master-health-heading { font-size: 30px; }
-}
-
-.master-health-subdesc {
-    margin: 10px 0px;
-    max-width: 1400px;
-    text-align: left;
-    color: #475569; /* Using a direct color, assuming --muted is not globally available */
-    line-height: 1.7;
-    font-size: 16px;
-}
-
+                /* Section Header */
+                .twitter-section-wrap {
+                    position: relative;
+                    overflow: clip;
+                    background: transparent;
+                    isolation: isolate;
+                }
+                .twitter-section-content {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    max-width: 1300px;
+                    margin: 0 auto;
+                    padding: 25px 25px;
+                    color: #0f1419; /* Twitter dark text */
+                    z-index: 1;
+                }
+                .twitter-pills {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    justify-content: left;
+                    margin-bottom: 18px;
+                }
+                .twitter-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 6px 10px;
+                    font-weight : 500;
+                    border-radius: 999px;
+                    font-size: 12px;
+                    letter-spacing: 0.02em;
+                    background: rgba(29, 161, 242, 0.1); /* Twitter blue light */
+                    color: #1f4e9b; /* Twitter blue */
+                    border: 1px solid rgba(29, 161, 242, 0.22);
+                    width: fit-content;
+                    align-self: flex-start;
+                }
+                .twitter-heading {
+                    margin: 0 0 8px;
+                    font-size: 40px;
+                    line-height: 1.08;
+                    font-weight: 900;
+                    letter-spacing: -0.02em;
+                    text-align: left;
+                    background: linear-gradient(92deg, #007bff 0%, #28a745 40%);/* Twitter dark to blue gradient */
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                }
+                @media (max-width: 768px) {
+                    .twitter-heading { font-size: 34px; }
+                }
+                @media (max-width: 480px) {
+                    .twitter-heading { font-size: 30px; }
+                }
+                .twitter-subdesc {
+                    margin: 10px 0px;
+                    max-width: 1400px;
+                    text-align: left;
+                    color: #5b7083; /* Twitter muted text */
+                    line-height: 1.7;
+                    font-size: 16px;
+                }
 
                 /* Chat Container */
-                .master-health-chat-container {
+                .twitter-chat-container {
                     flex-grow: 1;
                     width: 50%;
                     max-width: 700px;
-                    background-color: #f0f2f5; /* Light grey for chat background */
+                    background-color: #ffffff; /* White background for chat */
                     border-radius: 15px;
                     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
                     height: 600px; /* Fixed height for chat container */
+                    border: 1px solid #e1e8ed; /* Light border */
                 }
 
-                .master-health-chat-container.night-mode {
-                    background-color: #000000; /* Black background for night mode */
-                    color: #ffffff; /* White text for night mode */
+                /* Night Mode */
+                .twitter-chat-container.night-mode {
+                    background-color: #15202b; /* Twitter dark background */
+                    color: #e1e8ed; /* Twitter light text */
+                    border-color: #38444d;
                 }
-
-                .master-health-chat-container.night-mode .master-health-chat-header {
-                    background: #1a1a1a; /* Darker header for night mode */
+                .twitter-chat-container.night-mode .twitter-chat-header {
+                    background: #15202b;
+                    color: #e1e8ed;
+                    border-bottom-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-chat-messages {
+                    background-color: #15202b;
+                }
+                .twitter-chat-container.night-mode .twitter-bot-message {
+                    background: #22303c; /* Darker bot message background */
+                    color: #e1e8ed;
+                    border-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-user-message {
+                    background: #1da1f2; /* Twitter blue for user messages */
                     color: #ffffff;
+                    border-color: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .twitter-system-message {
+                    background: #38444d;
+                    color: #e1e8ed;
+                }
+                .twitter-chat-container.night-mode .twitter-bottom-input-container {
+                    background: #15202b;
+                    border-top-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-bottom-input {
+                    background: #22303c;
+                    color: #e1e8ed;
+                    border-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-bottom-input::placeholder {
+                    color: #8899a6;
+                }
+                .twitter-chat-container.night-mode .twitter-pill-button {
+                    background: #22303c;
+                    color: #e1e8ed;
+                    border-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-pill-button:hover:not(:disabled) {
+                    background-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-review-card {
+                    background: #22303c;
+                    color: #e1e8ed;
+                    border-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .twitter-review-card h4 {
+                    color: #e1e8ed;
+                }
+                .twitter-chat-container.night-mode .twitter-review-card strong {
+                    color: #e1e8ed;
+                }
+                .twitter-chat-container.night-mode .twitter-confirm-button {
+                    background: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .twitter-send-button {
+                    background: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .twitter-send-button:hover:not(:disabled) {
+                    background: #0c85d0;
+                }
+                .twitter-chat-container.night-mode .twitter-chat-header .package-info i {
+                    color: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .other-checkup-suggestions {
+                    background-color: #22303c;
+                    border-color: #38444d;
+                    color: #e1e8ed;
+                }
+                .twitter-chat-container.night-mode .other-checkup-suggestions .suggestion-heading {
+                    color: #e1e8ed;
+                }
+                .twitter-chat-container.night-mode .other-checkup-suggestions li {
+                    border-bottom-color: #38444d;
+                    color: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .other-checkup-suggestions li:hover {
+                    background-color: #38444d;
+                }
+                .twitter-chat-container.night-mode .other-checkup-suggestions li i {
+                    color: #1da1f2;
+                }
+                .twitter-chat-container.night-mode .online-status {
+                    color: #8899a6;
                 }
 
-                .master-health-chat-container.night-mode .master-health-chat-messages {
-                    background-color: #000000; /* Black background for messages in night mode */
-                    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp background image */
-                    background-size: contain;
-                }
 
-                .master-health-chat-container.night-mode .chat-bot-message {
-                    background: #333333; /* Darker bot message background */
-                    color: #ffffff;
-                    border-color: #555555;
-                }
-
-                .master-health-chat-container.night-mode .chat-user-message {
-                    background: #075e54; /* WhatsApp green for user messages in night mode */
-                    color: #ffffff;
-                    border-color: #075e54;
-                }
-
-                .master-health-chat-container.night-mode .chat-system-message {
-                    background: #555555;
-                    color: #ffffff;
-                }
-
-                .master-health-chat-container.night-mode .chat-bottom-input-container {
-                    background: #1a1a1a;
-                    border-top-color: #333333;
-                }
-
-                .master-health-chat-container.night-mode .chat-bottom-input {
-                    background: #333333;
-                    color: #ffffff;
-                    border-color: #555555;
-                }
-
-                .master-health-chat-container.night-mode .chat-bottom-input::placeholder {
-                    color: #cccccc;
-                }
-
-                .master-health-chat-container.night-mode .chat-pill-button {
-                    background: #333333;
-                    color: #ffffff;
-                    border-color: #555555;
-                }
-
-                .master-health-chat-container.night-mode .chat-pill-button:hover:not(:disabled) {
-                    background-color: #555555;
-                }
-
-                .master-health-chat-container.night-mode .chat-review-card {
-                    background: #333333;
-                    color: #ffffff;
-                    border-color: #555555;
-                }
-
-                .master-health-chat-container.night-mode .chat-review-card h4 {
-                    color: #ffffff;
-                }
-
-                .master-health-chat-container.night-mode .chat-review-card strong {
-                    color: #ffffff;
-                }
-
-                .master-health-chat-container.night-mode .chat-confirm-button {
-                    background: #075e54;
-                }
-
-                .master-health-chat-container.night-mode .chat-send-button {
-                    background: #075e54;
-                }
-
-                .master-health-chat-container.night-mode .chat-send-button:hover:not(:disabled) {
-                    background: #054a42;
-                }
-
-                .master-health-chat-container.night-mode .master-health-chat-header .package-info i {
-                    color: #ffffff; /* White checkmark in night mode */
-                }
-
-                .master-health-chat-header {
-                    background: #075e54; /* WhatsApp green header */
-                    color: white;
+                /* Chat Header */
+                .twitter-chat-header {
+                    background: #ffffff; /* White header */
+                    color: #0f1419;
                     padding: 15px 20px;
-                    font-size: 1.3em;
+                    font-size: 1.1em;
                     font-weight: bold;
                     display: flex;
                     align-items: center;
                     gap: 10px;
+                    border-bottom: 1px solid #e1e8ed;
                 }
-                .master-health-chat-header .profile-image {
+                .twitter-chat-header .profile-image {
                     width: 40px;
                     height: 40px;
                     border-radius: 50%;
                     object-fit: cover;
                 }
-                .master-health-chat-header .header-content {
+                .twitter-chat-header .header-content {
                     flex-grow: 1;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
                 }
-                .master-health-chat-header h3 {
+                .twitter-chat-header h3 {
                     margin: 0;
-                    font-size: 1.3em;
+                    font-size: 1.1em;
                 }
-                .master-health-chat-header .package-info {
+                .twitter-chat-header .package-info {
                     display: flex;
                     align-items: center;
                     gap: 5px;
                     margin: 5px 0 0;
-                    font-size: 0.9em;
+                    font-size: 0.8em;
                     opacity: 0.9;
                 }
-                .master-health-chat-header .package-info i {
-                    color: #0072ed; /* WhatsApp green for checkmark */
+                .twitter-chat-header .package-info i {
+                    color: #1da1f2; /* Twitter blue for checkmark */
                 }
 
-
-                .master-health-chat-messages {
+                /* Chat Messages */
+                .twitter-chat-messages {
                     flex-grow: 1;
                     padding: 20px;
-                    overflow-y: auto; /* Make messages scrollable */
-
+                    overflow-y: auto;
                     flex-direction: column;
                     gap: 10px;
-                    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp background image */
-                    background-size: contain;
-                    position: relative; /* Needed for relative positioning of FAB */
-                    justify-content: flex-end; /* Pushes content to the bottom */
-                    min-height: 0; /* Crucial for flex items with overflow */
-
-                    /* Custom scrollbar styles */
-                    scrollbar-width: auto; /* For Firefox */
+                    background-color: #f7f9fa; /* Light background for messages */
+                    position: relative;
+                    justify-content: flex-end;
+                    min-height: 0;
+                    scrollbar-width: thin;
+                    scrollbar-color: #aab8c2 transparent;
                 }
-
-                .master-health-chat-messages::-webkit-scrollbar {
-                    width: 5px; /* Minimal width */
-                    height: 4px;
+                .twitter-chat-messages::-webkit-scrollbar {
+                    width: 5px;
                 }
-
-                .master-health-chat-messages::-webkit-scrollbar-track {
-                    background: transparent; /* Transparent track */
+                .twitter-chat-messages::-webkit-scrollbar-track {
+                    background: transparent;
                 }
-
-                .master-health-chat-messages::-webkit-scrollbar-thumb {
-                    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent thumb */
+                .twitter-chat-messages::-webkit-scrollbar-thumb {
+                    background-color: #aab8c2;
                     border-radius: 10px;
-                    border: 1px solid transparent;
+                }
+                .twitter-chat-messages:hover::-webkit-scrollbar-thumb {
+                    background-color: #8899a6;
                 }
 
-                .master-health-chat-messages:hover::-webkit-scrollbar-thumb {
-                    background-color: rgba(0, 0, 0, 0.4); /* Darker on hover */
-                }
-
-                /* Chat Message Styles (from provided chat widget) */
-                .chat-system-message {
+                /* Chat Message Styles */
+                .twitter-system-message {
                     font-size: 12px;
-                    color: #334155;
-                    background: #e2e8f0;
+                    color: #5b7083;
+                    background: #e1e8ed;
                     padding: 6px 10px;
                     border-radius: 8px;
                     margin-bottom: 10px;
                     width: fit-content;
                     max-width: 85%;
+                    align-self: center;
                 }
-                .chat-bot-message-wrapper {
+                .twitter-bot-message-wrapper {
                     display: flex;
                     margin-bottom: 10px;
                     gap: 8px;
                     align-items: flex-start;
                 }
-                .chat-bot-avatar {
+                .twitter-bot-avatar {
                     width: 28px;
                     height: 28px;
                     border-radius: 50%;
-                    background: #075e54; /* WhatsApp green for bot avatar */
+                    background: #1da1f2; /* Twitter blue for bot avatar */
                     color: #fff;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     font-size: 13px;
                     flex: 0 0 auto;
-                    overflow: hidden; /* Ensure image is contained */
+                    overflow: hidden;
                 }
-                .chat-bot-avatar img {
+                .twitter-bot-avatar img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                 }
-                .chat-bot-message {
-                    background: #ffffff; /* White for bot messages */
-                    border: 1px solid #e5e7eb;
+                .twitter-bot-message {
+                    background: #e1e8ed; /* Light grey for bot messages */
+                    border: 1px solid #e1e8ed;
                     padding: 8px 12px;
-                    border-radius: 12px;
-                    color: #0f172a;
+                    border-radius: 18px; /* More rounded corners */
+                    color: #0f1419;
                     max-width: 80%;
                     white-space: pre-wrap;
-                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.05);
                 }
-                .chat-bot-message ul {
+                .twitter-bot-message ul {
                     list-style-type: disc;
                     padding-left: 20px;
                     margin: 5px 0;
                 }
-                .chat-bot-message li {
+                .twitter-bot-message li {
                     margin-bottom: 3px;
                 }
-                .chat-user-message-wrapper {
+                .twitter-user-message-wrapper {
                     display: flex;
                     justify-content: flex-end;
                     margin-bottom: 10px;
                 }
-                .chat-user-message {
-                    background: #dcf8c6; /* WhatsApp light green for user messages */
-                    border: 1px solid #dcf8c6;
+                .twitter-user-message {
+                    background: #1da1f2; /* Twitter blue for user messages */
+                    border: 1px solid #1da1f2;
                     padding: 8px 12px;
-                    border-radius: 12px;
-                    color: #0f172a;
+                    border-radius: 18px; /* More rounded corners */
+                    color: #ffffff;
                     max-width: 80%;
-                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.05);
                 }
 
                 /* Pill Button */
-                .chat-pill-button {
-                    border: 1px solid #e5e7eb;
+                .twitter-pill-button {
+                    border: 1px solid #e1e8ed;
                     background: #fff;
-                    color: #0f172a;
+                    color: #0f1419;
                     padding: 8px 12px;
                     border-radius: 999px;
                     cursor: pointer;
@@ -728,124 +823,48 @@ function MasterHealthCheckups() {
                     opacity: 1;
                     transition: background-color 0.2s ease;
                 }
-                .chat-pill-button:hover:not(:disabled) {
-                    background-color: #f0f2f5;
+                .twitter-pill-button:hover:not(:disabled) {
+                    background-color: #f7f9fa;
                 }
-                .chat-pill-button:disabled {
+                .twitter-pill-button:disabled {
                     cursor: not-allowed;
                     opacity: 0.6;
                 }
-                .chat-row-buttons {
+                .twitter-row-buttons {
                     display: flex;
                     flex-wrap: wrap;
                     gap: 8px;
                     margin-bottom: 10px;
                 }
 
-                /* Start Button */
-                .master-health-start-button-wrapper {
-                        display: flex;
-    justify-content: center;
-
-    margin-top: 180px;
-    margin-left: 400px;
-                }
-                .master-health-start-button {
-    background: linear-gradient(45deg, #25d366, #128c7e);
-    color: white; /* Changed to black for better contrast on glass effect */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle white border */
-    padding: 7px 90px;
-    border-radius: 5px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px); /* Glass effect blur for button */
-}
-.master-health-start-button:hover {
-    background: rgba(18, 140, 126, 0.8); /* Darker WhatsApp green with transparency */
-    transform: translateY(-2px);
-}
-
-.glass-effect-card {
-    background: linear-gradient(45deg, #25d366, #128c7e);
-    backdrop-filter: blur(10px); /* Glass effect blur */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Light border */
-    border-radius: 15px;
-    padding: 20px;
-    color: white; /* Black text inside glass effect */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin-bottom: 20px;
-}
-.glass-effect-card p {
-    font-size: 1.2em;
-    margin-bottom: 15px;
-}
-
-
-                /* Floating Action Button for Book Now */
-                .master-health-fab-book-now-wrapper {
-                    text-align: right; /* Align button to the left */
-                    width: 100%; /* Take full width to allow left alignment */
-                    margin-top: auto; /* Push to bottom */
-                    padding: 0 20px 10px; /* Add some padding for spacing */
-                }
-                .master-health-fab-book-now {
-                    position: relative; /* Changed to relative */
-                    background: linear-gradient(45deg, #25d366, #128c7e); /* WhatsApp green gradient */
-                    color: white;
-                    border: none;
-                    border-radius: 30px; /* Pill shape */
-                    padding: 12px 20px;
-                    font-size: 1em;
-                    font-weight: bold;
-                    cursor: pointer;
-                    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-                    transition: all 0.3s ease;
-                    display: inline-flex; /* Use inline-flex to respect text-align */
-                    align-items: center;
-                    gap: 8px;
-                    z-index: 10; /* Ensure it's above other content */
-                }
-                .master-health-fab-book-now:hover {
-                    background: linear-gradient(45deg, #128c7e, #075e54); /* Darker gradient on hover */
-                    transform: translateY(-2px) scale(1.02);
-                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-                }
-                .master-health-fab-book-now i {
-                    font-size: 1.2em;
-                }
-
-
                 /* Bottom Chat Input */
-                .chat-bottom-input-container {
-                    border-top: 1px solid #e5e7eb;
+                .twitter-bottom-input-container {
+                    border-top: 1px solid #e1e8ed;
                     padding: 10px;
-                    background: #f0f2f5; /* Light grey for input background */
+                    background: #ffffff;
                     display: flex;
                     gap: 8px;
                     align-items: center;
                 }
-                .chat-bottom-input {
+                .twitter-bottom-input {
                     flex: 1;
-                    padding: 10px 12px;
-                    border-radius: 20px; /* More rounded for WhatsApp feel */
-                    border: 1px solid #e5e7eb;
+                    padding: 10px 15px;
+                    border-radius: 25px; /* More rounded for Twitter feel */
+                    border: 1px solid #e1e8ed;
                     outline: none;
                     font-size: 14px;
-                    background: #fff;
+                    background: #f7f9fa;
+                    color: #0f1419;
                 }
-                .chat-bottom-input:disabled {
-                    background: #f1f5f9;
+                .twitter-bottom-input:disabled {
+                    background: #e1e8ed;
                     cursor: not-allowed;
                 }
-                .chat-send-button {
-                    background: #128c7e; /* WhatsApp green for send button */
+                .twitter-send-button {
+                    background: #1da1f2; /* Twitter blue for send button */
                     color: #ffffff;
                     border: none;
-                    border-radius: 50%; /* Circular send button */
+                    border-radius: 50%;
                     width: 40px;
                     height: 40px;
                     padding: 0;
@@ -857,50 +876,44 @@ function MasterHealthCheckups() {
                     font-size: 1.2em;
                     transition: background 0.2s ease;
                 }
-                .chat-send-button i {
-                    margin-right: 0; /* Remove gap for circular button */
+                .twitter-send-button:hover:not(:disabled) {
+                    background: #0c85d0; /* Darker blue on hover */
                 }
-                .chat-send-button span {
-                    display: none; /* Hide "Send" text for circular button */
-                }
-                .chat-send-button:hover:not(:disabled) {
-                    background: #075e54; /* Darker green on hover */
-                }
-                .chat-send-button:disabled {
+                .twitter-send-button:disabled {
                     opacity: 0.6;
                     cursor: not-allowed;
                 }
 
                 /* Review Details Card */
-                .chat-review-card {
-                    border: 1px solid #e5e7eb;
+                .twitter-review-card {
+                    border: 1px solid #e1e8ed;
                     background: #ffffff;
                     border-radius: 12px;
                     padding: 12px;
-                    color: #0f172a;
+                    color: #0f1419;
                     margin-bottom: 12px;
-                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+                    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.05);
                 }
-                .chat-review-card h4 {
+                .twitter-review-card h4 {
                     font-weight: 700;
                     margin-bottom: 6px;
-                    color: #333;
+                    color: #0f1419;
                 }
-                .chat-review-card p {
+                .twitter-review-card p {
                     font-size: 14px;
                     line-height: 1.6;
                     margin-bottom: 4px;
                 }
-                .chat-review-card strong {
-                    color: #212529;
+                .twitter-review-card strong {
+                    color: #0f1419;
                 }
-                .chat-review-buttons {
+                .twitter-review-buttons {
                     display: flex;
                     gap: 8px;
                     margin-top: 15px;
                 }
-                .chat-confirm-button {
-                    background: #25d366; /* WhatsApp green */
+                .twitter-confirm-button {
+                    background: #1da1f2; /* Twitter blue */
                     color: #fff;
                     border: none;
                     border-radius: 10px;
@@ -909,120 +922,71 @@ function MasterHealthCheckups() {
                     opacity: 1;
                     transition: opacity 0.3s ease;
                 }
-                .chat-confirm-button:disabled {
+                .twitter-confirm-button:disabled {
                     cursor: not-allowed;
                     opacity: 0.7;
                 }
 
-
                 /* Responsive adjustments */
                 @media (max-width: 1024px) {
-                    .master-health-chat-container {
+                    .twitter-chat-container {
                         width: 40%;
                     }
                 }
-
                 @media (max-width: 768px) {
-                    .master-health-main-layout {
+                    .twitter-main-layout {
                         flex-direction: column;
                         align-items: center;
                         gap: 15px;
-                        // margin-bottom: 60px;
                     }
-                        .glass-effect-card{
-                                 background: linear-gradient(45deg, #25d366, #128c7e);
-                                 backdrop-filter: blur(10px);
-                                 border: 1px solid rgba(255, 255, 255, 0.3);
-                                 border-radius: 15px;
-                                 padding: 20px;
-                                 color: white;
-                                 box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-                                 text-align: center;
-                                  margin-bottom: 20px;
-                        }
-                    .master-health-start-button-wrapper {
-                                 margin-top: 115px;
-                                 margin-left: 60px;
-                                    }
-                    .master-health-chat-container {
+                    .twitter-chat-container {
                         width: 95%;
                         max-width: none;
                     }
-                        .whatsapp-modal-container{
-                            max-width: 300px;
-                        }
-                }
+                    .twitter-modal-container {
+                    width: 95%;
+                    }
 
-                @media (max-width: 480px) {
                 }
 
                 /* Styles for OtherCheckupSuggestions */
-                .other-checkup-suggestions {
+                .twitter-other-checkup-suggestions {
                     margin-top: 20px;
                     padding: 15px;
-                    background-color: #e7f3ff; /* Light blue background */
+                    background-color: #e8f5fe; /* Light Twitter blue background */
                     border-radius: 10px;
-                    border: 1px solid #cce0ff;
+                    border: 1px solid #aedffc;
                     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
                 }
-
-                .master-health-chat-container.night-mode .other-checkup-suggestions {
-                    background-color: #222222;
-                    border-color: #444444;
-                    color: #ffffff;
-                }
-
-                .other-checkup-suggestions .suggestion-heading {
+                .twitter-other-checkup-suggestions .suggestion-heading {
                     font-weight: bold;
                     margin-bottom: 10px;
-                    color: #333333;
+                    color: #0f1419;
                 }
-
-                .master-health-chat-container.night-mode .other-checkup-suggestions .suggestion-heading {
-                    color: #ffffff;
-                }
-
-                .other-checkup-suggestions ul {
+                .twitter-other-checkup-suggestions ul {
                     list-style: none;
                     padding: 0;
                     margin: 0;
                 }
-
-                .other-checkup-suggestions li {
+                .twitter-other-checkup-suggestions li {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     padding: 10px 0;
-                    border-bottom: 1px solid #e0e0e0;
+                    border-bottom: 1px solid #e1e8ed;
                     cursor: pointer;
-                    color: #007bff; /* Blue text for links */
+                    color: #1da1f2; /* Twitter blue text for links */
                     transition: background-color 0.2s ease;
                 }
-
-                .master-health-chat-container.night-mode .other-checkup-suggestions li {
-                    border-bottom-color: #555555;
-                    color: #87ceeb; /* Lighter blue for night mode links */
-                }
-
-                .other-checkup-suggestions li:last-child {
+                .twitter-other-checkup-suggestions li:last-child {
                     border-bottom: none;
                 }
-
-                .other-checkup-suggestions li:hover {
-                    background-color: #f0f8ff; /* Lighter blue on hover */
+                .twitter-other-checkup-suggestions li:hover {
+                    background-color: #f0f2f5; /* Lighter blue on hover */
                 }
-
-                .master-health-chat-container.night-mode .other-checkup-suggestions li:hover {
-                    background-color: #333333;
-                }
-
-                .other-checkup-suggestions li i {
+                .twitter-other-checkup-suggestions li i {
                     margin-left: 10px;
-                    color: #007bff;
-                }
-
-                .master-health-chat-container.night-mode .other-checkup-suggestions li i {
-                    color: #87ceeb;
+                    color: #1da1f2;
                 }
 
                 /* New styles for online status and package name animation */
@@ -1030,71 +994,81 @@ function MasterHealthCheckups() {
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
-                    overflow: hidden; /* Hide overflow during transition */
-                    height: 60px; /* Adjusted height for smoother transition */
-                    justify-content: center; /* Center content vertically */
+                    overflow: hidden;
+                    height: 60px;
+                    justify-content: center;
                     transition: height 0.3s ease-in-out;
                 }
-
                 .package-name {
                     font-size: 1em;
                     font-weight: bold;
                     margin: 0;
-                    display: flex; /* To align text and icon */
+                    display: flex;
                     align-items: center;
-                    gap: 5px; /* Space between text and tick */
+                    gap: 5px;
                     transition: transform 0.3s ease-in-out;
                 }
-
                 .package-name.active {
-                    transform: translateY(-5px); /* Move up when online is active */
+                    transform: translateY(-5px);
                 }
-
                 .online-status {
                     font-size: 0.6em;
-                    color: #ffffffff; /* Light green for online status */
+                    color: #8899a6; /* Twitter grey for online status */
                     opacity: 0;
                     height: 0;
                     overflow: hidden;
                     transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out, transform 0.3s ease-in-out;
                 }
-
                 .online-status.active {
                     opacity: 1;
-                    color: #ffffffff;
-                    height: 18px; /* Adjust height as needed for the text */
-                    transform: translateY(-5px); /* Move up with package name */
+                    height: 18px;
+                    transform: translateY(-5px);
                 }
-
-                .master-health-chat-container.night-mode .online-status {
-                    color: #ffffffdd; /* Darker green for night mode online status */
+                .twitter-typing-indicator {
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: #1da1f2;
+                    animation: twitter-typing-blink 1s infinite;
+                    margin-left: 5px;
+                }
+                .twitter-typing-indicator:nth-child(2) {
+                    animation-delay: 0.2s;
+                }
+                .twitter-typing-indicator:nth-child(3) {
+                    animation-delay: 0.4s;
+                }
+                @keyframes twitter-typing-blink {
+                    0%, 100% { opacity: 0.2; }
+                    50% { opacity: 1; }
                 }
                 `}
             </style>
 
-            <div className="master-health-section-wrap">
-                <div className="master-health-section-content">
-                    <div className="master-health-pills">
-                        <span className="master-health-pill">Comprehensive Care</span>
-                        <span className="master-health-pill">Personalized Packages</span>
+             <div className="twitter-section-wrap">
+                <div className="twitter-section-content">
+                    <div className="twitter-pills">
+                        <span className="twitter-pill">Comprehensive Care</span>
+                        <span className="twitter-pill">Personalized Packages</span>
                     </div>
 
-                    <h2 className="master-health-heading">Master Health Checkups</h2>
-                    <p className="master-health-subdesc">
-                        Explore our range of master health checkup packages designed to keep you healthy. Book an appointment today for a comprehensive assessment.
+                    <h2 className="twitter-heading">List of Medical Tests</h2>
+                    <p className="twitter-subdesc">
+                        Explore our range of List of Medical Tests packages designed to keep you healthy. Book an appointment today for a comprehensive assessment.
                     </p>
                 </div>
             </div>
 
-            <div className="master-health-main-layout">
-                <PackageSelectionButtons
+            <div className="twitter-main-layout">
+                <MedicalPackageSelectionButtons
                     faqData={faqData}
                     selectedPackage={selectedPackage}
                     onPackageSelect={handlePackageSelect}
                 />
 
-                <div className={`master-health-chat-container ${isNightMode ? 'night-mode' : ''}`}>
-                    <div className="master-health-chat-header">
+                <div className={`twitter-chat-container ${isNightMode ? 'night-mode' : ''}`}>
+                    <div className="twitter-chat-header">
                         <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHW-NLxclPLszlqKKFIpMLwuivoz6A3nDuaw&s" alt="Profile" className="profile-image" width={40} height={40} />
                         <div className="header-content">
                             {selectedPackage && (
@@ -1109,7 +1083,7 @@ function MasterHealthCheckups() {
                             )}
                         </div>
                         <div className="relative">
-                            <button onClick={() => setShowNightModeOption(prev => !prev)} className="text-white text-xl focus:outline-none">
+                            <button onClick={() => setShowNightModeOption(prev => !prev)} className="text-blue-500 text-xl focus:outline-none">
                                 <i className="fa-solid fa-ellipsis-v"></i>
                             </button>
                             {showNightModeOption && (
@@ -1127,26 +1101,23 @@ function MasterHealthCheckups() {
                             )}
                         </div>
                     </div>
-                    <div className="master-health-chat-messages" ref={chatContainerRef}>
+                    <div className="twitter-chat-messages" ref={chatContainerRef}>
                         {chatMessages.map((msg, index) =>
                             msg.type === "system" ? <SystemMessage key={index} text={msg.text} /> :
-                                msg.type === "bot" ? <BotMessage key={index} text={msg.text} list={msg.list} isTyping={msg.isTyping} /> :
-                                    <UserMessage key={index} text={msg.text} />
+                            msg.type === "bot" ? <BotMessage key={index} text={msg.text} list={msg.list} isTyping={msg.isTyping} /> :
+                            <UserMessage key={index} text={msg.text} />
                         )}
 
-                        {/* Removed the "Would you like to send? Start" button */}
-                        {/* Removed the "Book Now" FAB button */}
-
                         {currentStep === Steps.REVIEW_ENQUIRY && (
-                            <div className="chat-review-card">
+                            <div className="twitter-review-card">
                                 <h4>Review your enquiry details</h4>
                                 <p><strong>Package:</strong> {selectedPackage}</p>
                                 <p><strong>Name:</strong> {form.name}</p>
                                 <p><strong>Email:</strong> {form.email}</p>
                                 <p><strong>Phone:</strong> {form.phone}</p>
-                                <div className="chat-review-buttons">
+                                <div className="twitter-review-buttons">
                                     <button
-                                        className="chat-pill-button"
+                                        className="twitter-pill-button"
                                         onClick={() => {
                                             setChatMessages(prev => [...prev, { type: 'user', text: "Edit Details" }]);
                                             setChatMessages(prev => [...prev, { type: 'bot', text: "Okay, let's re-enter your name. What is your full name?" }]);
@@ -1159,7 +1130,7 @@ function MasterHealthCheckups() {
                                         Edit Details
                                     </button>
                                     <button
-                                        className="chat-confirm-button"
+                                        className="twitter-confirm-button"
                                         onClick={handleConfirmEnquiry}
                                         disabled={sending}
                                     >
@@ -1191,4 +1162,4 @@ function MasterHealthCheckups() {
     );
 }
 
-export default MasterHealthCheckups;
+export default ListofMedicalTests;

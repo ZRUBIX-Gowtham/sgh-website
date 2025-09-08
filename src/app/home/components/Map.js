@@ -7,7 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function Map() {
+function Map({ headingGradient }) { // Changed prop name to headingGradient
   const containerRef = React.useRef(null);
   const galleryRef = React.useRef(null);
   const mapCardRef = React.useRef(null);
@@ -60,6 +60,7 @@ function Map() {
       --brand-2: #12b981;
       --brand-3: #ef5da8;
       --glow: 0 8px 30px rgba(2, 6, 23, 0.08);
+      --map-heading-gradient: ${headingGradient || 'linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)'}; /* Default gradient */
     }
 
     .map-wrap {
@@ -89,7 +90,7 @@ function Map() {
   font-weight: 900;
   letter-spacing: -0.02em;
   text-align: center;
-  background: linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%);
+  background: var(--map-heading-gradient); /* Using the CSS variable here */
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -277,7 +278,7 @@ function Map() {
             <span className="map-pill">Easy to Reach</span>
           </div>
 
-          <h2 className="map-heading">Our Location</h2>
+          <h2 className="map-heading">Our Location</h2> {/* Removed inline style */}
           <p className="map-subdesc">
             Visit Salem Gopi Hospital at our centrally located campus. Find directions, call us, or email for assistance.
           </p>

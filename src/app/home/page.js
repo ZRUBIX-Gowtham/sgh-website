@@ -63,8 +63,7 @@ function HomePage() {
       {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>} {/* Using dynamic import */}
       {/* {isMobile ? <Carousel8Mobile /> : <Carousel8/>} */}
       <DynamicMediaPanels/> {/* Using dynamic import */}
-      <Map/>
-      
+<Map headingGradient="linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)" />      
       {/* <Newsletter/> */}
       {/* {isMobile ? <FooterMobile /> : <Footer/>} */}
     </>
