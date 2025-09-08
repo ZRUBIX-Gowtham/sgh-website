@@ -88,8 +88,8 @@ export default function LiveChatAgentPage() {
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // window.addEventListener('storage', handleStorageChange);
+    // return () => window.removeEventListener('storage', handleStorageChange);
   }, [loadChatSessions, activeCustomer]);
 
   // Scroll to bottom when active chat messages change
