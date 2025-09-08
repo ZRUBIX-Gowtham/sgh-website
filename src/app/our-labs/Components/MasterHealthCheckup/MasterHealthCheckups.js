@@ -1,4 +1,3 @@
-// MasterHealthCheckups.jsx
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -120,7 +119,8 @@ function OtherCheckupSuggestions({ faqData, selectedPackage, onPackageSelect }) 
 }
 
 
-function MasterHealthCheckups() {
+function 
+MasterHealthCheckups() {
     const [selectedPackage, setSelectedPackage] = useState(null);
     const [chatMessages, setChatMessages] = useState([]);
     const chatContainerRef = useRef(null);
@@ -153,7 +153,7 @@ function MasterHealthCheckups() {
     // New state to store chat history for each package
     const [packageChatHistory, setPackageChatHistory] = useState({});
 
-    const faqData = useMemo(() => [ // Wrapped faqData in useMemo
+    const faqData = useMemo(() => [
         {
             question: "Cardiac Master Health Checkup",
             answer: [
@@ -199,7 +199,7 @@ function MasterHealthCheckups() {
                 "Ultrasonagraphy Abdomen - Kub", "Vascular Doppler & Vibrotham", "Podiascan", "Eye Checkup",
             ]
         },
-    ], []); // Empty dependency array means it's created once
+    ], []);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -207,7 +207,7 @@ function MasterHealthCheckups() {
         }
     }, [chatMessages]);
 
-    const handlePackageSelect = useCallback((packageName) => { // Wrapped handlePackageSelect in useCallback
+    const handlePackageSelect = useCallback((packageName) => {
         // Save current package's state before switching
         if (selectedPackage && selectedPackage !== packageName) {
             setPackageChatHistory(prev => ({
@@ -245,13 +245,13 @@ function MasterHealthCheckups() {
             setInputFieldDisabled(true);
             setForm(prev => ({ ...prev, department: packageName, name: "", email: "", phone: "" }));
         }
-    }, [selectedPackage, chatMessages, currentStep, inputValue, form, inputFieldDisabled, packageChatHistory, Steps]); // Added dependencies for useCallback
+    }, [selectedPackage, chatMessages, currentStep, inputValue, form, inputFieldDisabled, packageChatHistory, Steps]);
 
     // Initial load: Display welcome for Cardiac Master Health Checkup
     useEffect(() => {
         const initialPackage = faqData[0]; // Cardiac Master Health Checkup
         handlePackageSelect(initialPackage.question);
-    }, [faqData, handlePackageSelect]); // Added faqData and handlePackageSelect to dependencies
+    }, [faqData, handlePackageSelect]);
 
     // Effect to save current chat state to history whenever it changes
     useEffect(() => {
@@ -268,7 +268,7 @@ function MasterHealthCheckups() {
                 }
             }));
         }
-    }, [chatMessages, currentStep, inputValue, form, inputFieldDisabled, selectedPackage, isTyping]); // Added isTyping to dependencies
+    }, [chatMessages, currentStep, inputValue, form, inputFieldDisabled, selectedPackage, isTyping]);
 
     // Effect to toggle online status
     useEffect(() => {
