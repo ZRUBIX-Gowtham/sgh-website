@@ -1,6 +1,9 @@
+// app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ChatWidget from './chatbot/page';
+import { Suspense } from 'react'; // Import Suspense
+
+import ClientLayout from './ClientLayout'; // Import the new client component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +33,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-        <ChatWidget />
+        {/* Wrap ClientLayout with Suspense */}
+        <Suspense fallback={<div>Loading...</div>}> {/* You can customize this fallback */}
+          <ClientLayout>
+            {children}
+          </ClientLayout>
+        </Suspense>
       </body>
     </html>
   );

@@ -115,7 +115,6 @@ function CommonFooter() {
               grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
               gap: 40px;
               margin-bottom: 60px;
-              margin-left : -60px;
           }
           
           .app-footer-column h3 { /* Renamed */
