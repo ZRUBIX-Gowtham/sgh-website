@@ -10,6 +10,8 @@ import { HomeAboutMobile, HomeAboutDesktop } from './components/HomeAbout';
 import { BookSection } from './components/BookSection';
 import Map from './components/Map';
 import PartnerSection from './components/PartnersSec';
+import Header from '../common-components/header/page';
+import CommonFooter from '../common-components/footer/page';
 
 // Dynamically import components that cause hydration issues with SSR disabled
 const DynamicDepartmentSection = dynamic(() => import('./components/DepartmentSection').then(mod => mod.DepartmentSection), { ssr: false });
@@ -51,6 +53,8 @@ function HomePage() {
 
   return (
     <>
+
+      <Header/>
       <HeroSection/>
       {/* {isMobile ? <HeroSectionMobile /> : <HeroSection />} */}
       {/* {isMobile ? <BookNowMobile /> : <BookNow/>} */}
@@ -63,9 +67,9 @@ function HomePage() {
       {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>} {/* Using dynamic import */}
       {/* {isMobile ? <Carousel8Mobile /> : <Carousel8/>} */}
       <DynamicMediaPanels/> {/* Using dynamic import */}
-<Map headingGradient="linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)" />      
-      {/* <Newsletter/> */}
-      {/* {isMobile ? <FooterMobile /> : <Footer/>} */}
+      <Map headingGradient="linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)" />      
+      <CommonFooter/>
+     
     </>
   );
 }

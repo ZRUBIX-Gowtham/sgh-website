@@ -137,6 +137,7 @@ export function HeroSection() {
           width: 100%;
           min-height: 86vh;
           display: grid;
+          
           grid-template-columns: 1.05fr 0.95fr;
           gap: 24px;
           align-items: center;
@@ -478,7 +479,7 @@ export function HeroSection() {
             </a>
 
              {/* Two open-source images (Unsplash Source) */}
-              <div className="extra-images" aria-hidden="false">
+              {/* <div className="extra-images" aria-hidden="false">
                 <div className="extra-image">
                   <Image
                     src="https://online.hbs.edu/Style%20Library/api/resize.aspx?imgpath=/online/PublishingImages/blog/health-care-economics.jpg&w=1200&h=630"
@@ -499,7 +500,7 @@ export function HeroSection() {
                     priority={false}
                   />
                 </div>
-              </div>
+              </div> */}
           </div>
 
           {/* Doctor info removed as requested */}

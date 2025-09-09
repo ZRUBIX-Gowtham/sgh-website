@@ -1,18 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-
-import LabHeroSection from './Components/LabheroSection';
-import LabIntroSection from './Components/labintrosection';
-import MasterHealthCheckups from './Components/MasterHealthCheckup/MasterHealthCheckups';
-import ListofMedicalTests from './Components/List of Medical Test/ListofMedicalTest';
+import AboutHeroSection from './Components/AboutHeroSection';
+// import CommonFooter from '../../Common-Components/Footer';
+import AboutService from './Components/AboutService';
+import {AboutWhyUs, AboutWhyUsMobile } from './Components/AboutWhyUs';
+import AboutExperience from './Components/AboutExperience';
+import AboutDoctors from './Components/AboutDoctors.js';
+import AboutRewards from './Components/AboutReward';
 import Map from '../home/components/Map';
 import Header from '../common-components/header/page';
 import CommonFooter from '../common-components/footer/page';
 
-
-
-function Labs() {
+function Aboutpage() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -44,16 +44,19 @@ function Labs() {
 
   return (
     <>
+    
       <Header/>
-      <LabHeroSection/>
-      <LabIntroSection/>
-      <MasterHealthCheckups/>
-      <ListofMedicalTests/>
-        <Map headingGradient="linear-gradient(92deg, #007bff 0%, #28a745 100%)" />
-      
+      <AboutHeroSection/>
+      <AboutService/>
+      {/* <AboutWhyUs/> */}
+      {isMobile ? <AboutWhyUsMobile /> : <AboutWhyUs/>}
+      <AboutExperience/>
+      <AboutDoctors/>
+      <AboutRewards/>
+      <Map/>
       <CommonFooter/>
     </>
   );
 }
 
-export default Labs;
+export default Aboutpage;

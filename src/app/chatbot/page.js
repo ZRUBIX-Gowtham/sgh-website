@@ -292,7 +292,7 @@ export default function ChatWidget() {
       data: { ...form },
       timestamp: new Date().toISOString(),
     };
-    const WEBHOOK_URL = "http://zohoapis.in/creator/custom/syroex/Sgh_ChatBot_Data?publickey=yCjDRJFv7N7snxgfhdyARu6Qy&data="; // replace with real endpoint if needed
+    const WEBHOOK_URL = "https://zohoapis.in/creator/custom/syroex/Sgh_ChatBot_Data?publickey=yCjDRJFv7N7snxgfhdyARu6Qy&data="; // replace with real endpoint if needed
 
                 const encodedJsonString = encodeURIComponent(JSON.stringify(payload));
 
