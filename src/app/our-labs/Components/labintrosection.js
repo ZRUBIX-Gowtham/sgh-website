@@ -33,15 +33,15 @@ function LabIntroSection() {
 
           /* Heading style with lab-like gradient */
           .lab-intro-content h3 {
-            font-size: clamp(28px, 4vw, 44px);
+            font-size: 40px;
             line-height: 1.1;
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: -0.02em;
-            background: linear-gradient(92deg, #007bff 0%, #28a745 100%); /* Blue to Green Gradient */
+            background: #212529;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0 0 10px;
+            margin: 0 0 20px;
           }
 
           .lab-intro-content p {

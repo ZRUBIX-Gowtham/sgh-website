@@ -539,16 +539,15 @@ function ListofMedicalTests() {
                     align-self: flex-start;
                 }
                 .twitter-heading {
-                    margin: 0 0 8px;
-                    font-size: 40px;
-                    line-height: 1.08;
-                    font-weight: 900;
-                    letter-spacing: -0.02em;
-                    text-align: left;
-                    background: linear-gradient(92deg, #007bff 0%, #28a745 40%);/* Twitter dark to blue gradient */
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    color: transparent;
+                   font-size: 40px;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: #212529;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0 0 5px;
                 }
                 @media (max-width: 768px) {
                     .twitter-heading { font-size: 34px; }

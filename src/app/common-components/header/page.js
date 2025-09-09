@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faBars, faPhoneAlt, faEnvelope, faMapMarkerAlt, faShieldAlt, 
-    faPlus, faMinus, faChevronDown, faTimes 
-} from '@fortawesome/free-solid-svg-icons'; 
+import {
+    faBars, faPhoneAlt, faEnvelope, faMapMarkerAlt, faShieldAlt,
+    faPlus, faMinus, faChevronDown, faTimes
+} from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link'; // Import Link from next/link
 
 
-function Header() {
+function Header({ showScrolledVariant = true }) { // Added showScrolledVariant prop with default true
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
     const [isContactOverlayOpen, setIsContactOverlayOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
@@ -26,9 +26,9 @@ function Header() {
 
     const menuItems = [
         { name: 'Home', link: '/' },
-        { 
-            name: 'About', 
-            link: '/about', 
+        {
+            name: 'About',
+            link: '/about',
             dropdown: [
                 { name: 'Insurance', link: '/insurance' },
                 { name: 'Privacy Policy', link: '/privacy-policy' },
@@ -36,10 +36,10 @@ function Header() {
         },
         { name: 'Departments', link: '/departments' },
         { name: 'Labs', link: '/our-labs' },
-        { name: 'Find Doctor', link: '/doctors' },
-        // { 
-        //     name: 'Books', 
-        //     // link: '#', 
+        // { name: 'Find Doctor', link: '/doctors' },
+        // {
+        //     name: 'Books',
+        //     // link: '#',
         //     dropdown: [
         //         { name: 'Tamil Books', link: '/book' },
         //         { name: 'English Books', link: '/' },
@@ -70,22 +70,24 @@ function Header() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (sideMenuRef.current && !sideMenuRef.current.contains(event.target) && 
+            if (sideMenuRef.current && !sideMenuRef.current.contains(event.target) &&
                 openSideMenuRef.current && !openSideMenuRef.current.contains(event.target) && isSideMenuOpen) {
                 setIsSideMenuOpen(false);
                 setActiveDropdown(null);
             }
-            if (contactOverlayRef.current && !contactOverlayRef.current.contains(event.target) && 
+            if (contactOverlayRef.current && !contactOverlayRef.current.contains(event.target) &&
                 openContactOverlayRef.current && !openContactOverlayRef.current.contains(event.target) && isContactOverlayOpen) {
                 setIsContactOverlayOpen(false);
             }
         };
 
         const handleScroll = () => {
-            if (window.scrollY > 10) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
+            if (showScrolledVariant) { // Only update scrolled state if showScrolledVariant is true
+                if (window.scrollY > 10) {
+                    setIsScrolled(true);
+                } else {
+                    setIsScrolled(false);
+                }
             }
         };
 
@@ -96,7 +98,7 @@ function Header() {
             document.removeEventListener('mousedown', handleClickOutside);
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [isSideMenuOpen, isContactOverlayOpen]); 
+    }, [isSideMenuOpen, isContactOverlayOpen, showScrolledVariant]); // Added showScrolledVariant to dependency array
 
     return (
         <>
@@ -106,19 +108,19 @@ function Header() {
                     --secondary-color: #6c757d;
                     --text-color: #274760;
                     --light-bg: #f8f9fa;
-                    --white: #ffffff; 
+                    --white: #ffffff;
                     --shadow: rgba(0, 0, 0, 0.1);
                     --transition-speed: 0.3s;
                 }
 
-            
+
                 .navbar {
                     display: flex;
                     justify-content: space-around;
                     align-items: center;
                     padding: 15px 0px;
                     z-index: 1000;
-                    background-color: transparent; 
+                    background-color: transparent;
                     box-shadow: none;
                     height: 80px;
                     position: fixed;
@@ -132,9 +134,9 @@ function Header() {
                 .navbar-brand {
                     display: flex;
                     align-items: center;
-                    font-size: 28px;
+                    font-size: 24px;
                     font-weight: 700;
-                    color: var(--text-color); 
+                    color: var(--text-color);
                     text-decoration: none;
                     letter-spacing: -0.5px;
                     transition: color var(--transition-speed) ease;
@@ -156,7 +158,7 @@ function Header() {
                     position: relative;
                 }
                 .nav-link {
-                    color: var(--text-color); 
+                    color: var(--text-color);
                     text-decoration: none;
                     font-size: 18px;
                     font-weight : 700;
@@ -175,12 +177,11 @@ function Header() {
                     background-color: #274760;
                     transition: width var(--transition-speed) ease-out;
                 }
-                .nav-link:hover::after,
-                .nav-link.active::after { /* Added .active class */
+                .nav-link:hover::after {
                     width: 70%;
                 }
                 .nav-link:hover {
-                 
+
                     transform: translateY(-2px);
                 }
                 .nav-link:hover::after {
@@ -195,7 +196,7 @@ function Header() {
                 .nav-item.has-dropdown > .nav-link .dropdown-arrow-icon {
                     font-size: 12px;
                     margin-left: 8px;
-                    color: #274760; 
+                    color: #274760;
                     transition: transform var(--transition-speed) ease, color var(--transition-speed) ease;
                 }
                 .nav-item.has-dropdown:hover > .nav-link .dropdown-arrow-icon {
@@ -237,14 +238,14 @@ function Header() {
                     color: var(--primary-color);
                     padding-left: 25px;
                 }
-              
+
                 .navbar-icons {
                     display: flex;
                     align-items: center;
                 }
                 .navbar-icons .icon {
                     font-size: 24px;
-                    color: #274760; 
+                    color: #274760;
                     margin-left: 25px;
                     cursor: pointer;
                     transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
@@ -253,7 +254,7 @@ function Header() {
                     color: var(--primary-color);
                     transform: scale(1.1);
                 }
-              
+
                 /* Hide desktop menu on smaller screens */
                 @media (max-width: 992px) {
                     .navbar-nav {
@@ -261,7 +262,14 @@ function Header() {
                     }
                     .navbar {
                         padding: 15px 0px;
-                     
+                        background-color: var(--white); /* Always white background on mobile */
+                        box-shadow: 0 2px 10px var(--shadow); /* Always show shadow on mobile */
+                    }
+                    .navbar-brand {
+                        color: var(--text-color); /* Ensure brand color is dark on mobile */
+                    }
+                    .navbar-icons .icon {
+                        color: var(--text-color); /* Ensure icon color is dark on mobile */
                     }
                     .navbar-icons .icon:not(.menu-icon) {
                         margin-left: 15px;
@@ -274,6 +282,15 @@ function Header() {
                     .navbar-icons .menu-icon {
                         display: block;
                     }
+                    /* Remove scrolled specific overrides for mobile, as we want it to always look scrolled */
+                    .navbar.scrolled {
+                        background-color: var(--white);
+                        box-shadow: 0 2px 10px var(--shadow);
+                    }
+                    .navbar.scrolled .navbar-brand,
+                    .navbar.scrolled .navbar-icons .icon {
+                        color: var(--text-color);
+                    }
                 }
 
                 /* Hide mobile menu icon on desktop */
@@ -283,26 +300,26 @@ function Header() {
                     }
                 }
 
-                /* Scrolled state styles */
+                /* Scrolled state styles (only applies on desktop if showScrolledVariant is true) */
                 .navbar.scrolled {
-                    background-color: var(--white); 
+                    background-color: var(--white);
                     box-shadow: 0 2px 10px var(--shadow);
                 }
                 .navbar.scrolled .navbar-brand {
-                    color: var(--text-color); 
+                    color: var(--text-color);
                 }
                 .navbar.scrolled .nav-link {
-                    color: var(--text-color); 
+                    color: var(--text-color);
                 }
                 .navbar.scrolled .nav-link::after {
                     background-color: #274760; /* Ensure underline color is primary color when scrolled */
                     height: 2.5px;
                 }
                 .navbar.scrolled .nav-item.has-dropdown > .nav-link .dropdown-arrow-icon {
-                    color: #274760; 
+                    color: #274760;
                 }
                 .navbar.scrolled .navbar-icons .icon {
-                    color: #274760; 
+                    color: #274760;
                 }
 
 
@@ -314,7 +331,7 @@ function Header() {
                     z-index: 1001;
                     top: 0;
                     right: 0;
-                    background-color: var(--white);
+                    background-color: var(--white); /* Always white background for side menu */
                     overflow-x: hidden;
                     transition: width 0.5s cubic-bezier(0.7, 0, 0.3, 1);
                     padding-top: 80px;
@@ -378,13 +395,6 @@ function Header() {
                 .side-menu-nav .nav-link:hover {
                     background-color: var(--light-bg);
                     color: var(--primary-color);
-                }
-                .side-menu-nav .nav-link.active { /* Added .active class for side menu */
-                    background-color: var(--light-bg);
-                    color: var(--primary-color);
-                }
-                .side-menu-nav .nav-link.active::after { /* Ensure underline for active side menu link */
-                    width: 100%;
                 }
 
                 /* Side menu dropdown indicator */
@@ -619,26 +629,22 @@ function Header() {
                     transform: translateY(-3px) scale(1.1);
                 }
             `}</style>
-            <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-                <Link href="/" className="navbar-brand" legacyBehavior>
-                    <a>SGH</a>
+            <nav className={`navbar ${isScrolled && showScrolledVariant ? 'scrolled' : ''}`}> {/* Apply scrolled class conditionally */}
+                <Link href="/" className="navbar-brand">
+                    SGH
                 </Link>
                 <ul className="navbar-nav" id="desktopMenu">
                     {menuItems.map((item, index) => (
                         <li key={index} className={`nav-item ${item.dropdown ? 'has-dropdown' : ''}`}>
-                            <Link href={item.link} passHref legacyBehavior>
-                                <a className={`nav-link ${pathname === item.link || (item.dropdown && item.dropdown.some(subItem => pathname === subItem.link)) ? 'active' : ''}`}>
+                            <Link href={item.link} passHref className="nav-link"> {/* Removed active class */}
                                     {item.name}
                                     {item.dropdown && <FontAwesomeIcon icon={faChevronDown} className="dropdown-arrow-icon" />}
-                                </a>
                             </Link>
                             {item.dropdown && (
                                 <ul className="dropdown-menu">
                                     {item.dropdown.map((subItem, subIndex) => (
                                         <li key={subIndex}>
-                                            <Link href={subItem.link} passHref legacyBehavior>
-                                                <a className={pathname === subItem.link ? 'active' : ''}>{subItem.name}</a>
-                                            </Link>
+                                            <Link href={subItem.link} passHref>{subItem.name}</Link> {/* Removed active class */}
                                         </li>
                                     ))}
                                 </ul>
@@ -657,32 +663,30 @@ function Header() {
                 <ul className="side-menu-nav">
                     {menuItems.map((item, index) => (
                         <li key={index} className={`nav-item ${item.dropdown ? 'has-dropdown' : ''} ${activeDropdown === index ? 'active' : ''}`}>
-                            <Link href={item.link} passHref legacyBehavior>
-                                <a 
-                                    className={`nav-link ${pathname === item.link || (item.dropdown && item.dropdown.some(subItem => pathname === subItem.link)) ? 'active' : ''}`} 
-                                    onClick={handleSideMenuLinkClick} 
-                                >
-                                    {item.name}
-                                    {item.dropdown && (
-                                        <FontAwesomeIcon 
-                                            icon={activeDropdown === index ? faMinus : faPlus} 
-                                            className="dropdown-icon" 
-                                            onClick={(e) => { 
-                                                e.stopPropagation(); 
-                                                e.preventDefault(); 
-                                                handleSideMenuDropdownClick(index);
-                                            }} 
-                                        />
-                                    )}
-                                </a>
+                            <Link
+                                href={item.link}
+                                passHref
+                                className="nav-link" // Removed active class
+                                onClick={handleSideMenuLinkClick}
+                            >
+                                {item.name}
+                                {item.dropdown && (
+                                    <FontAwesomeIcon
+                                        icon={activeDropdown === index ? faMinus : faPlus}
+                                        className="dropdown-icon"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            handleSideMenuDropdownClick(index);
+                                        }}
+                                    />
+                                )}
                             </Link>
                             {item.dropdown && (
                                 <ul className="side-menu-dropdown-menu">
                                     {item.dropdown.map((subItem, subIndex) => (
                                         <li key={subIndex}>
-                                            <Link href={subItem.link} passHref legacyBehavior>
-                                                <a onClick={handleSideMenuLinkClick} className={pathname === subItem.link ? 'active' : ''}>{subItem.name}</a>
-                                            </Link>
+                                            <Link href={subItem.link} passHref>{subItem.name}</Link> {/* Removed active class */}
                                         </li>
                                     ))}
                                 </ul>
@@ -700,7 +704,7 @@ function Header() {
                         <h3>SGH</h3>
                     </div>
                     <p className="tagline">Your Partner in Health and Wellness</p>
-                  
+
                     <div className="contact-info-card">
                         <FontAwesomeIcon icon={faPhoneAlt} />
                         <div className="text-content">
@@ -708,7 +712,7 @@ function Header() {
                             <p>123-456-7890</p>
                         </div>
                     </div>
-                  
+
                     <div className="contact-info-card">
                         <FontAwesomeIcon icon={faEnvelope} />
                         <div className="text-content">
@@ -716,7 +720,7 @@ function Header() {
                             <p>hellocallcenter@gmail.com</p>
                         </div>
                     </div>
-                  
+
                     <div className="contact-info-card">
                         <FontAwesomeIcon icon={faMapMarkerAlt} />
                         <div className="text-content">
