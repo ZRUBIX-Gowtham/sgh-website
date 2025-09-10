@@ -21,22 +21,7 @@ export default function ClientLayout({ children }) {
 
       return () => clearTimeout(initialLoadTimer);
     }
-  }, []); // Runs only once on initial mount
-
-  // Effect for subsequent route changes
-  useEffect(() => {
-    // This effect should only run AFTER the initial mount is complete
-    // and when pathname or searchParams actually change.
-    if (!isInitialMount.current) {
-      setLoading(true); // Start loading for navigation
-
-      const navigationTimer = setTimeout(() => {
-        setLoading(false); // End loading after navigation delay
-      }, 1000); // Navigation delay
-
-      return () => clearTimeout(navigationTimer);
-    }
-  }, [pathname, searchParams]); // Re-run on route changes (after initial mount)
+  }, []);
 
   return (
     <>

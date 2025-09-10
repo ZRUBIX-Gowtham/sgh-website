@@ -2,6 +2,18 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Insurance1 from '../../../../public/HomePageImages/Insurance1.webp';
+import Insurance2 from '../../../../public/HomePageImages/Insurance2.webp';
+import Insurance3 from '../../../../public/HomePageImages/Insurance3.webp';
+import Insurance4 from '../../../../public/HomePageImages/Insurance4.webp';
+import Insurance5 from '../../../../public/HomePageImages/Insurance5.webp';
+import Insurance6 from '../../../../public/HomePageImages/Insurance6.webp';
+import Insurance7 from '../../../../public/HomePageImages/Insurance7.webp';
+import Insurance8 from '../../../../public/HomePageImages/Insurance8.webp';
+
+
+
+
 
 function PartnerSection(props) {
   const {
@@ -12,14 +24,7 @@ function PartnerSection(props) {
   } = props;
 
   const partnerImages = [
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/5-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/11-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/9-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/14-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/12-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/15-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/4-150x150.png',
-    'https://salemgopihospital.in/wp-content/uploads/2022/06/17-150x150.png',
+    Insurance1,Insurance2,Insurance3,Insurance4,Insurance5,Insurance6,Insurance7,,Insurance8
   ];
 
   return (

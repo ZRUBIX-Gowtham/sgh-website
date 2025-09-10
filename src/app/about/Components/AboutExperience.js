@@ -56,8 +56,6 @@ function AboutExperience() {
     <div className="stats-section-simple">
       <style>
         {`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-
         .stats-section-simple {
             padding: 40px 20px;
             margin: 10px auto;

@@ -2,11 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
+import kidneybooktamil from '../../../../public/HomePageImages/kidneybooktamil.webp';
+
 
 export function BookSection() {
   const slides = [
     {
-      image: 'https://salemgopihospital.in/wp-content/uploads/2024/06/kidney-book-tamil.png',
+      image: kidneybooktamil,
       alt: 'Understanding Kidney Diseases',
       title: 'Understanding Kidney Diseases',
       description:
@@ -17,7 +19,7 @@ export function BookSection() {
       tag: 'Patient Education',
     },
     {
-      image: 'https://salemgopihospital.in/wp-content/uploads/2024/06/kidney-book-tamil.png',
+      image: kidneybooktamil,
       alt: 'சிறுநீரக பாதிப்புகள்',
       title: 'சிறுநீரக பாதிப்புகள்',
       description:

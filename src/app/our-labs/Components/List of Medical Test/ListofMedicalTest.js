@@ -372,13 +372,16 @@ function ListofMedicalTests() {
             setInputFieldDisabled(history.inputFieldDisabled);
             setIsTyping(history.isTyping || false);
         } else {
-            // Initialize new package chat
+            // Initialize new package chat with details shown automatically
+            const packageDetails = faqData.find(pkg => pkg.question === packageName);
             setChatMessages([
                 { type: 'bot', text: `Welcome to ${packageName}!` },
-                { type: 'bot', text: "Type 'Start' to view details and make an enquiry." }
+                { type: 'bot', text: `Here are the details for the ${packageName}:` },
+                { type: 'bot', list: packageDetails.answer },
+                { type: 'bot', text: "Would you like to make an enquiry about this package? Type 'Book Now' below." }
             ]);
-            setCurrentStep(Steps.WELCOME_SCREEN);
-            setInputValue("Start");
+            setCurrentStep(Steps.DETAILS_SHOWN);
+            setInputValue("Book Now");
             setInputFieldDisabled(true);
             setForm(prev => ({ ...prev, department: packageName, name: "", email: "", phone: "" }));
         }
@@ -398,17 +401,7 @@ function ListofMedicalTests() {
         setTimeout(() => {
             setChatMessages(prev => prev.filter(msg => !msg.isTyping)); // Remove typing indicator
             setIsTyping(false);
-            if (currentStep === Steps.WELCOME_SCREEN && value.toLowerCase() === "start") {
-                const packageDetails = faqData.find(pkg => pkg.question === selectedPackage);
-                setChatMessages(prev => [...prev,
-                    { type: 'bot', text: `Here are the details for the ${selectedPackage}:` },
-                    { type: 'bot', list: packageDetails.answer },
-                    { type: 'bot', text: "Would you like to make an enquiry about this package? Type 'Book Now' below." }
-                ]);
-                setCurrentStep(Steps.DETAILS_SHOWN);
-                setInputValue("Book Now");
-                setInputFieldDisabled(true);
-            } else if (currentStep === Steps.DETAILS_SHOWN && value.toLowerCase() === "book now") {
+            if (currentStep === Steps.DETAILS_SHOWN && value.toLowerCase() === "book now") {
                 setChatMessages(prev => [...prev, { type: 'bot', text: "Great! What is your full name?" }]);
                 setCurrentStep(Steps.ASK_NAME);
                 setInputValue("");

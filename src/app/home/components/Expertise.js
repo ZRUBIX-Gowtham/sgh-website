@@ -5,6 +5,15 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 
+import nephrology1 from '../../../../public/HomePageImages/Nephrology-1.webp';
+import nephrology2 from '../../../../public/HomePageImages/Nephrology-2.webp';
+import urology1 from '../../../../public/HomePageImages/Urology-1.webp';
+import urology2 from '../../../../public/HomePageImages/Urology-2.webp';
+import dialysis1 from '../../../../public/HomePageImages/Dialysis-1.webp';
+import dialysis2 from '../../../../public/HomePageImages/Dialysis-2.webp';
+import kidneytransplant1 from '../../../../public/HomePageImages/kidneytransplant1.webp';
+import kidneytransplant2 from '../../../../public/HomePageImages/kidneytransplant2.webp';
+
 // Register plugin on the client
 if (typeof window !== 'undefined' && gsap.core && !gsap.core.globals().ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
@@ -54,8 +63,7 @@ export const ExpertiseSection = () => {
         answer:
           'Our Nephrology Department offers expert care for kidney diseases, dialysis, and transplants, including complex ABO-incompatible cases. We provide advanced treatment with compassionate support for patients of all ages.',
         images: [
-          'https://static.wixstatic.com/media/690369_12d1b576e211467e8c59d684b9c88117~mv2.jpg/v1/fill/w_1000,h_600,al_c,q_85/Nephrology.jpg',
-          'https://www.chaudharyhospital.in/wp-content/uploads/2021/02/Nephrology.png',
+         nephrology1,nephrology2
         ],
       },
       {
@@ -63,8 +71,7 @@ export const ExpertiseSection = () => {
         answer:
           'Specialized management of diabetes, prevention of complications, and lifestyle care for long-term health.',
         images: [
-          'https://mydoctorshub.com/wp-content/uploads/2024/11/vegetiarian-diabetes-diet-chart-food.webp',
-          'https://images.unsplash.com/photo-1512621776951-a57141f2eefd',
+          dialysis1,dialysis2
         ],
       },
       {
@@ -72,8 +79,7 @@ export const ExpertiseSection = () => {
         answer:
           'Comprehensive care for urinary tract, bladder, prostate, and kidney stone problems, using advanced diagnostics and minimally invasive surgical techniques.',
         images: [
-          'https://images.unsplash.com/photo-1586773860418-d37222d8fce3',
-          'https://images.unsplash.com/photo-1579154204601-01588f351e67',
+       urology1,urology2
         ],
       },
       {
@@ -81,8 +87,7 @@ export const ExpertiseSection = () => {
         answer:
           'State-of-the-art hemodialysis and peritoneal dialysis services with advanced machines, skilled staff, and strict infection control — ensuring safe, comfortable, and effective kidney care for patients of all ages.',
         images: [
-          'https://www.hindustantimes.com/ht-img/img/2024/03/19/1600x900/Kidney_Transplantation_1710834285646_1710834347989.jpg',
-          'https://www.amjtransplant.org/cms/10.1016/j.ajt.2022.11.023/asset/67e8b19f-f682-4510-b55e-8a666f84cdd7/main.assets/gr1_lrg.jpg',
+         kidneytransplant1,kidneytransplant2
         ],
       },
     ],
@@ -504,8 +509,7 @@ export const ExpertiseSectionMobile = () => {
         answer:
           'Our Nephrology Department offers expert care for kidney diseases, dialysis, and transplants, including complex ABO-incompatible cases. We provide advanced treatment with compassionate support for patients of all ages.',
         images: [
-          'https://static.wixstatic.com/media/690369_12d1b576e211467e8c59d684b9c88117~mv2.jpg/v1/fill/w_1000,h_600,al_c,q_85/Nephrology.jpg',
-          'https://www.chaudharyhospital.in/wp-content/uploads/2021/02/Nephrology.png',
+          nephrology1,nephrology2
         ],
       },
       {
@@ -513,8 +517,7 @@ export const ExpertiseSectionMobile = () => {
         answer:
           'Specialized management of diabetes, prevention of complications, and lifestyle care for long-term health.',
         images: [
-          'https://mydoctorshub.com/wp-content/uploads/2024/11/vegetiarian-diabetes-diet-chart-food.webp',
-          'https://images.unsplash.com/photo-1512621776951-a57141f2eefd',
+          dialysis1,dialysis2
         ],
       },
       {
@@ -522,8 +525,7 @@ export const ExpertiseSectionMobile = () => {
         answer:
           'Comprehensive care for urinary tract, bladder, prostate, and kidney stone problems, using advanced diagnostics and minimally invasive surgical techniques.',
         images: [
-          'https://images.unsplash.com/photo-1586773860418-d37222d8fce3',
-          'https://images.unsplash.com/photo-1579154204601-01588f351e67',
+         urology1,urology1
         ],
       },
       {
@@ -531,8 +533,7 @@ export const ExpertiseSectionMobile = () => {
         answer:
           'State-of-the-art hemodialysis and peritoneal dialysis services with advanced machines, skilled staff, and strict infection control — ensuring safe, comfortable, and effective kidney care for patients of all ages.',
         images: [
-          'https://www.hindustantimes.com/ht-img/img/2024/03/19/1600x900/Kidney_Transplantation_1710834285646_1710834347989.jpg',
-          'https://www.amjtransplant.org/cms/10.1016/j.ajt.2022.11.023/asset/67e8b19f-f682-4510-b55e-8a666f84cdd7/main.assets/gr1_lrg.jpg',
+        kidneytransplant1,kidneytransplant2
         ],
       },
     ],

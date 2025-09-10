@@ -64,10 +64,6 @@ function CommonFooter() {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           }
           
-          @font-face {
-              font-family: 'Inter';
-              src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-          }
           
           /* New wrapper class for footer-specific body styles */
           .app-footer-wrapper { /* Renamed */

@@ -4,6 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Welcomeabout from '../../../../public/HomePageImages/Welcomeabout.webp';
+import tickicon from '../../../../public/HomePageImages/tickicon.svg';
 
 // Register plugin (client-only)
 if (typeof window !== 'undefined' && gsap.core && !gsap.core.globals().ScrollTrigger) {
@@ -12,7 +14,6 @@ if (typeof window !== 'undefined' && gsap.core && !gsap.core.globals().ScrollTri
 
 const LightTokens = () => (
   <style jsx global>{`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
     :root {
       --ink: #0b1324;
       --muted: #4b5563;
@@ -31,7 +32,6 @@ const LightTokens = () => (
       --radius-sm: 10px;
     }
     html, body {
-      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
       color: var(--ink);
       background: #fff;
       text-rendering: optimizeLegibility;
@@ -51,8 +51,8 @@ const LightTokens = () => (
    About (Desktop)
 -------------------------------------------- */
 export const HomeAboutDesktop = () => {
-  const backgroundImage = 'https://market-resized.envatousercontent.com/photodune.net/EVA/TRX/e0/ec/fc/49/69/v1_E11/E1139QFU.jpeg?auto=format&q=94&mark=https%3A%2F%2Fassets.market-storefront.envato-static.com%2Fwatermarks%2Fphoto-260724.png&opacity=0.2&cf_fit=contain&w=590&h=963&s=9f1eb5636f70acddbaba8cf938efe4ac033f8a2ba11276f9ebf6fa89485505ce';
-  const tickIcon = 'https://prohealth-react.vercel.app/images/icons/tick.svg';
+  const backgroundImage = Welcomeabout
+  const tickIcon = tickicon
   const aboutUsTitle = 'About Us';
   const welcomeTitle = 'Welcome to Salem Gopi Hospital';
   const hospitalDescription = `Salem Gopi Memorial Hospital was inaugurated on 06-12-1981 in fond remembrance of the beloved brother of Dr. K. Janakiraman, the Chairman. We are one of Salem’s leading multispecialty hospitals, specializing in Diabetology, Nephrology, and Trauma care for over 30 years. We were the first multispecialty hospital in Salem to receive ISO 9001:2001 certification. Our team includes dedicated doctors, dieticians, patient educators, nurses, physiotherapists, and trained professionals committed to competent and compassionate patient care.`;
@@ -189,8 +189,8 @@ export const HomeAboutDesktop = () => {
    About (Mobile)
 -------------------------------------------- */
 export const HomeAboutMobile = () => {
-  const backgroundImage = 'https://market-resized.envatousercontent.com/photodune.net/EVA/TRX/e0/ec/fc/49/69/v1_E11/E1139QFU.jpeg?auto=format&q=94&mark=https%3A%2F%2Fassets.market-storefront.envato-static.com%2Fwatermarks%2Fphoto-260724.png&opacity=0.2&cf_fit=contain&w=590&h=963&s=9f1eb5636f70acddbaba8cf938efe4ac033f8a2ba11276f9ebf6fa89485505ce';
-  const tickIcon = 'https://prohealth-react.vercel.app/images/icons/tick.svg';
+  const backgroundImage = Welcomeabout
+  const tickIcon = tickicon
   const aboutUsTitle = 'About Us';
   const welcomeTitle = 'Welcome to Salem Gopi Hospital';
   const hospitalDescription = `Salem Gopi Memorial Hospital, established in 1981, is a leading multispecialty center in Salem with strengths in Diabetology, Nephrology, and Trauma care. We are committed to quality, empathy, and continuous improvement in patient care.`;

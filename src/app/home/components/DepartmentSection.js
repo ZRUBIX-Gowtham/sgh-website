@@ -2,6 +2,15 @@
 
 import React from 'react';
 import Image from 'next/image';
+import nephrology1 from '../../../../public/HomePageImages/Nephrology-1.webp';
+import nephrology2 from '../../../../public/HomePageImages/Nephrology-2.webp';
+import urology1 from '../../../../public/HomePageImages/Urology-1.webp';
+import urology2 from '../../../../public/HomePageImages/Urology-2.webp';
+import dialysis1 from '../../../../public/HomePageImages/Dialysis-1.webp';
+import dialysis2 from '../../../../public/HomePageImages/Dialysis-2.webp';
+import diabetes1 from '../../../../public/HomePageImages/Diabetes-1.webp';
+import diabetes2 from '../../../../public/HomePageImages/Diabetes-2.webp';
+
 
 export const DepartmentSection = () => {
   const departmentsData = [
@@ -13,8 +22,7 @@ export const DepartmentSection = () => {
         'Salem Gopi Hospital is recognized as one of the premier nephrology hospitals in Salem, providing specialized care for kidney diseases, chronic kidney disease (CKD), and dialysis support to patients throughout Salem and its surrounding areas.',
       link: '/departments/nephrology',
       images: [
-        'https://static.wixstatic.com/media/690369_12d1b576e211467e8c59d684b9c88117~mv2.jpg/v1/fill/w_1000,h_600,al_c,q_85/Nephrology.jpg',
-        'https://www.chaudharyhospital.in/wp-content/uploads/2021/02/Nephrology.png',
+        nephrology1,nephrology2
       ],
     },
     {
@@ -23,10 +31,9 @@ export const DepartmentSection = () => {
       title: 'Urology',
       description:
         'Our Urology department at Salem Gopi Hospital provides advanced care for kidney stones, urinary tract infections, bladder disorders, and prostate health, serving patients in Salem and surrounding districts.',
-      link: '#/departments?name=Neurology',
+      link: '/departments?name=Neurology',
       images: [
-        'https://images.unsplash.com/photo-1586773860418-d37222d8fce3',
-        'https://images.unsplash.com/photo-1579154204601-01588f351e67',
+        urology1,urology2
       ],
     },
     {
@@ -37,8 +44,7 @@ export const DepartmentSection = () => {
         'The Dialysis center at Salem Gopi Hospital in Salem provides safe, reliable, and comfortable treatment for patients with kidney failure, making us a trusted dialysis center in the local community.',
       link: '/departments/dialysis',
       images: [
-        'https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1584982751601-97dcc096659c?q=80&w=1200&auto=format&fit=crop',
+        dialysis1,dialysis2
       ],
     },
     {
@@ -49,8 +55,7 @@ export const DepartmentSection = () => {
         'Salem Gopi Hospital offers complete diabetes care in Salem with personalized plans for Type 1, Type 2, and lifestyle-related diabetes, helping local patients manage their condition and improve their quality of life.',
       link: '/departments/diabetes',
       images: [
-        'https://mydoctorshub.com/wp-content/uploads/2024/11/vegetiarian-diabetes-diet-chart-food.webp',
-        'https://images.unsplash.com/photo-1512621776951-a57141f2eefd',
+        diabetes1,diabetes2
       ],
     },
   ];

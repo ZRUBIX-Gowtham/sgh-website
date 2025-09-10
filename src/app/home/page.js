@@ -53,23 +53,16 @@ function HomePage() {
 
   return (
     <>
-
       <Header/>
       <HeroSection/>
-      {/* {isMobile ? <HeroSectionMobile /> : <HeroSection />} */}
-      {/* {isMobile ? <BookNowMobile /> : <BookNow/>} */}
-      <DynamicDepartmentSection/> {/* Using dynamic import */}
+      <DynamicDepartmentSection/> 
       <PartnerSection/>
       {isMobile ? <HomeAboutMobile /> : <HomeAboutDesktop/>}
-      {/* {isMobile ? <ServicesMobile /> : <ServicesDesktop/>} */}
-      <DynamicServicesVariantC/> {/* Using dynamic import */}
+      <DynamicServicesVariantC/>
       <BookSection/>
-      {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>} {/* Using dynamic import */}
-      {/* {isMobile ? <Carousel8Mobile /> : <Carousel8/>} */}
-      <DynamicMediaPanels/> {/* Using dynamic import */}
+      {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>}
       <Map headingGradient="linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)" />      
       <CommonFooter/>
-     
     </>
   );
 }

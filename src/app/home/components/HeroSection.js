@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'; // Import useState
 import Image from 'next/image';
+import doctorimage from '../../../../public/HomePageImages/HeroSectionImage.webp';
+import hearticon from '../../../../public/HomePageImages/hearticon.webp';
 
 export function HeroSection() {
   const heroData = {
@@ -12,38 +14,14 @@ export function HeroSection() {
       ctaPrimary: { label: 'Book an Appointment', action: 'openModal' }, // Changed href to action
       ctaSecondary: { label: 'Call +91 9894352229', href: 'tel:+91 9894352229' },
     },
-    doctorInfoBox: {
-      avatar:
-        'https://files-accl.zohoexternal.com/public/workdrive-external/previewdata/d41w54025eaed20c74ddbaf5ceaf5b374d?orig=true',
-      name: 'Dr D Mahadevan MD.,DM',
-      specialty: 'Neurology',
-      scheduleDays: 'Monday - Thursday',
-      scheduleTime: '09:00 AM - 07:00 PM',
-    },
-    floatingImages: [
-      {
-        src: 'https://files-accl.zohoexternal.com/public/workdrive-external/previewdata/d41w5ba0ff67edffc4291bbd47cb58ee44a1f?orig=true',
-        alt: 'Floating Element 1',
-        className: 'float-top-bottom',
-        width: 220,
-        height: 220,
-      },
-      {
-        src: 'https://files-accl.zohoexternal.com/public/workdrive-external/previewdata/d41w5c13872b16fda485fafba2ee5cc5bc2b1?orig=true',
-        alt: 'Floating Element 2',
-        className: 'float-left-right',
-        width: 300,
-        height: 180,
-      },
-    ],
     heartBeatImage: {
-      src: 'https://files-accl.zohoexternal.com/public/workdrive-external/previewdata/vfmizb249cf9f557340e288fee3223082dc29?orig=true',
+      src: hearticon,
       alt: 'Heart Beat Icon',
       width: 70,
       height: 70,
     },
     doctorImage: {
-      src: 'https://files-accl.zohoexternal.com/public/workdrive-external/previewdata/vfmizf40963cfb72d4b1d9c9f4b6d177dd892?orig=true',
+      src: doctorimage, // Changed this line
       alt: 'Doctor',
       width: 720,
       height: 980,
@@ -635,33 +613,7 @@ export function HeroSection() {
               <i className="fa-solid fa-phone" />
               {heroData.heroContent.ctaSecondary.label}
             </a>
-
-             {/* Two open-source images (Unsplash Source) */}
-              {/* <div className="extra-images" aria-hidden="false">
-                <div className="extra-image">
-                  <Image
-                    src="https://online.hbs.edu/Style%20Library/api/resize.aspx?imgpath=/online/PublishingImages/blog/health-care-economics.jpg&w=1200&h=630"
-                    alt="Healthcare"
-                    fill
-                    sizes="180px"
-                    style={{ objectFit: 'cover' }}
-                    priority={false}
-                  />
-                </div>
-                <div className="extra-image">
-                  <Image
-                    src="https://highpowervtls.com/wp-content/uploads/2024/06/highpowervalidation-321647-reusablemedicaldevices-blogbanner1.jpg"
-                    alt="Medical equipment"
-                    fill
-                    sizes="180px"
-                    style={{ objectFit: 'cover' }}
-                    priority={false}
-                  />
-                </div>
-              </div> */}
           </div>
-
-          {/* Doctor info removed as requested */}
         </div>
 
         {/* Right: Visual (hidden on mobile via CSS) */}
@@ -686,25 +638,6 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-
-        {/* Optional Floating accents (kept off by default)
-        {heroData.floatingImages.map((img, i) => (
-          <div
-            className={`float-el ${img.className}`}
-            key={i}
-            style={{ width: img.width, height: img.height }}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              width={img.width}
-              height={img.height}
-              style={{ objectFit: 'contain' }}
-              priority={i === 0}
-            />
-          </div>
-        ))}
-        */}
 
         {/* Heart bubble (hidden on mobile via CSS above) */}
         <div className="heart-bubble" aria-hidden="true">

@@ -30,8 +30,6 @@ function AboutDoctors() {
     <div className="doctors-section-absolute-image">
       <style>
         {`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-
         .doctors-section-absolute-image {
           font-family: 'Inter', sans-serif;
           padding: 10px 20px;

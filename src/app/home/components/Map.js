@@ -4,6 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import map1 from '../../../../public/MapImages/map1.webp';
+import map2 from '../../../../public/MapImages/map2.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -350,7 +352,7 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
                 <div className="map-gallery" ref={galleryRef} >
                   <div className="map-gallery-card">
                     <Image
-                      src="https://content3.jdmagicbox.com/v2/comp/salem/x9/0427px427.x427.120519075750.g5x9/catalogue/salem-gopi-hospital-pvt-ltd-hastampatti-salem-hospitals-n1siyoksfn.jpg"
+                      src = {map1}
                       alt="Hospital exterior"
                       fill
                       className="map-img"
@@ -360,7 +362,7 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
                   </div>
                   <div className="map-gallery-card">
                     <Image
-                      src="https://content3.jdmagicbox.com/v2/comp/salem/x9/0427px427.x427.120519075750.g5x9/catalogue/salem-gopi-hospital-pvt-ltd-hastampatti-salem-hospitals-205ztw5pxr.jpg"
+                      src= {map2}
                       alt="Hospital lobby"
                       fill
                       className="map-img"
