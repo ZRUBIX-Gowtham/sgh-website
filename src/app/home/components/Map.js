@@ -13,7 +13,6 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
   const mapCardRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
       // Gallery reveal
@@ -48,6 +47,25 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
 
     return () => ctx.revert();
   }, []);
+
+
+    // Scroll to section if hash is present in URL
+    React.useEffect(() => {
+      if (window.location.hash) {
+        const id = window.location.hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }, []);
+
+    const handleScrollToMap = () => {
+      const mapSection = document.getElementById('mapsection');
+      if (mapSection) {
+        mapSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
 
   const cssStyles = `
     :root {
@@ -269,7 +287,7 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
   return (
     <>
       <style>{cssStyles}</style>
-      <section className="map-wrap" ref={containerRef}>
+      <section className="map-wrap" ref={containerRef} id='mapsection'>
         {/* Removed decorative background layers */}
 
         <div className="map-contact-section">
@@ -329,7 +347,7 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
                 </div>
 
                 {/* Hospital Gallery */}
-                <div className="map-gallery" ref={galleryRef}>
+                <div className="map-gallery" ref={galleryRef} >
                   <div className="map-gallery-card">
                     <Image
                       src="https://content3.jdmagicbox.com/v2/comp/salem/x9/0427px427.x427.120519075750.g5x9/catalogue/salem-gopi-hospital-pvt-ltd-hastampatti-salem-hospitals-n1siyoksfn.jpg"

@@ -17,7 +17,7 @@ export default function ClientLayout({ children }) {
       const initialLoadTimer = setTimeout(() => {
         setLoading(false);
         isInitialMount.current = false; // Mark initial mount as complete
-      }, 3800); // Initial load delay
+      }, 2800); // Initial load delay
 
       return () => clearTimeout(initialLoadTimer);
     }
@@ -32,7 +32,7 @@ export default function ClientLayout({ children }) {
 
       const navigationTimer = setTimeout(() => {
         setLoading(false); // End loading after navigation delay
-      }, 3800); // Navigation delay
+      }, 1000); // Navigation delay
 
       return () => clearTimeout(navigationTimer);
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 import Image from 'next/image';
 
 export function HeroSection() {
@@ -9,8 +9,8 @@ export function HeroSection() {
       title: 'Comprehensive Kidney & Healthcare Services in Salem',
       description:
         'Salem Gopi Hospital combines expertise in kidney care, dialysis, and urology with a multiplicity of advanced medical services, delivering compassionate care for every stage of health.',
-      ctaPrimary: { label: 'Book an Appointment', href: 'tel:+919894352229' },
-      ctaSecondary: { label: 'Call 0427 266 6444', href: 'tel:+9104272666444' },
+      ctaPrimary: { label: 'Book an Appointment', action: 'openModal' }, // Changed href to action
+      ctaSecondary: { label: 'Call +91 9894352229', href: 'tel:+91 9894352229' },
     },
     doctorInfoBox: {
       avatar:
@@ -49,6 +49,72 @@ export function HeroSection() {
       height: 980,
     },
     pills: ['Kidney Care', 'Dialysis', 'Urology', '24/7 Emergency'],
+  };
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    appointmentDate: '',
+    message: '',
+  });
+  const [formErrors, setFormErrors] = useState({});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.name) errors.name = "Name is required.";
+    if (!formData.email) errors.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Email is invalid.";
+    if (!formData.phone) errors.phone = "Phone number is required.";
+    else if (!/^\d{10}$/.test(formData.phone)) errors.phone = "Phone number must be 10 digits.";
+    if (!formData.appointmentDate) errors.appointmentDate = "Appointment date is required.";
+    return errors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    // Replace with your actual webhook URL for appointments
+    const webhookUrl = 'YOUR_APPOINTMENT_WEBHOOK_URL_HERE'; // IMPORTANT: Replace this with your actual webhook URL
+
+    const dataToSend = {
+      title: "New Appointment Request",
+      ...formData,
+    };
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        alert('Appointment request submitted successfully!');
+        setShowModal(false);
+        setFormData({ name: '', email: '', phone: '', appointmentDate: '', message: '' }); // Reset form
+        setFormErrors({}); // Clear errors
+      } else {
+        alert('Appointment submission failed. Please try again.');
+        console.error('Webhook error:', response.statusText);
+      }
+    } catch (error) {
+      alert('An error occurred during submission.');
+      console.error('Submission error:', error);
+    }
   };
 
   React.useEffect(() => {
@@ -325,7 +391,7 @@ export function HeroSection() {
 
         .hero-section:hover .doctor-stage {
           box-shadow:
-            0 18px 44px rgba(2, 6, 23, 0.1),
+            0 18px 44px rgba(2, 6, 23, 0.1),\
             inset 0 1px 0 rgba(255, 255, 255, 0.65);
         }
 
@@ -407,6 +473,98 @@ export function HeroSection() {
           100% { transform: scale(1); }
         }
 
+        /* Modal Styles (copied from Insurance component) */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+
+        .modal-content {
+          background-color: white;
+          padding: 30px;
+          border-radius: 8px;
+          width: 90%;
+          max-width: 500px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+          position: relative;
+        }
+
+        .modal-close-button {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: none;
+          border: none;
+          font-size: 1.5em;
+          cursor: pointer;
+          color: #555;
+        }
+
+        .modal-title {
+          font-size: 1.8em;
+          margin-bottom: 20px;
+          color: #333;
+        }
+
+        .form-group {
+          margin-bottom: 15px;
+          text-align: left;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: bold;
+          color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 1em;
+          box-sizing: border-box;
+        }
+
+        .form-group textarea {
+          min-height: 100px;
+          resize: vertical;
+        }
+
+        .form-error {
+          color: red;
+          font-size: 0.9em;
+          margin-top: 5px;
+        }
+
+        .form-submit-button {
+          background-color: #427eb0;
+          color: white;
+          padding: 12px 25px;
+          border: none;
+          border-radius: 5px;
+          font-size: 1.1em;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+          width: 100%;
+          margin-top: 20px;
+        }
+
+        .form-submit-button:hover {
+          background-color: #2a567aff;
+        }
+
+
         /* Responsive */
         @media (max-width: 1100px) {
           .hero-section {
@@ -469,10 +627,10 @@ export function HeroSection() {
           <p className="description">{heroData.heroContent.description}</p>
 
           <div className="cta-row" role="group" aria-label="Primary actions">
-            <a className="btn btn-primary" href={heroData.heroContent.ctaPrimary.href}>
+            <button className="btn btn-primary" onClick={() => setShowModal(true)}> {/* Changed to button and added onClick */}
               <i className="fa-solid fa-calendar-check" />
               {heroData.heroContent.ctaPrimary.label}
-            </a>
+            </button>
             <a className="btn btn-secondary" href={heroData.heroContent.ctaSecondary.href}>
               <i className="fa-solid fa-phone" />
               {heroData.heroContent.ctaSecondary.label}
@@ -560,6 +718,82 @@ export function HeroSection() {
           />
         </div>
       </section>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close-button" onClick={() => setShowModal(false)}>
+              &times;
+            </button>
+            <h4 className="modal-title">Book an Appointment</h4>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="name">Name:</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+                {formErrors.name && <p className="form-error">{formErrors.name}</p>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+                {formErrors.email && <p className="form-error">{formErrors.email}</p>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Phone (Mandatory):</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  pattern="[0-9]{10}"
+                  title="Phone number must be 10 digits"
+                />
+                {formErrors.phone && <p className="form-error">{formErrors.phone}</p>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="appointmentDate">Preferred Appointment Date:</label>
+                <input
+                  type="date"
+                  id="appointmentDate"
+                  name="appointmentDate"
+                  value={formData.appointmentDate}
+                  onChange={handleInputChange}
+                  required
+                />
+                {formErrors.appointmentDate && <p className="form-error">{formErrors.appointmentDate}</p>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="message">Your Message (Optional):</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="e.g., I would like to book an appointment for a kidney check-up."
+                ></textarea>
+              </div>
+              <button type="submit" className="form-submit-button">
+                Submit Appointment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }
