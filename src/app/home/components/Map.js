@@ -62,13 +62,6 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
       }
     }, []);
 
-    const handleScrollToMap = () => {
-      const mapSection = document.getElementById('mapsection');
-      if (mapSection) {
-        mapSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    };
-
   const cssStyles = `
     :root {
       --ink: #0b1324;
@@ -289,7 +282,7 @@ function Map({ headingGradient }) { // Changed prop name to headingGradient
   return (
     <>
       <style>{cssStyles}</style>
-      <section className="map-wrap" ref={containerRef} id='mapsection'>
+      <section className="map-wrap" ref={containerRef}>
         {/* Removed decorative background layers */}
 
         <div className="map-contact-section">

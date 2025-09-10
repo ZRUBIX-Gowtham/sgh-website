@@ -60,7 +60,7 @@ function HomePage() {
       {isMobile ? <HomeAboutMobile /> : <HomeAboutDesktop/>}
       <DynamicServicesVariantC/>
       <BookSection/>
-      {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>}
+      {/* {isMobile ? <DynamicExpertiseSectionMobile /> : <DynamicExpertiseSection/>} */}
       <Map headingGradient="linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%)" />      
       <CommonFooter/>
     </>

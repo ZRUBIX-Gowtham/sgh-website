@@ -6,28 +6,39 @@ import PageLoader from '../pageloader/page'; // Adjust path if necessary
 import ChatWidget from './chatbot/page'; // Assuming this path is correct
 
 export default function ClientLayout({ children }) {
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isInitialMount = useRef(true); // Use a ref to track initial mount
 
-  // Effect for initial page load
   useEffect(() => {
     if (isInitialMount.current) {
       const initialLoadTimer = setTimeout(() => {
-        setLoading(false);
-        isInitialMount.current = false; // Mark initial mount as complete
-      }, 2800); // Initial load delay
+        setInitialLoading(false);
+        isInitialMount.current = false;
+      }, 50); // Initial load delay
 
       return () => clearTimeout(initialLoadTimer);
     }
   }, []);
 
+  useEffect(() => {
+    if (!isInitialMount.current) { // Only trigger page loading after initial mount
+      setPageLoading(true);
+      const pageLoadTimer = setTimeout(() => {
+        setPageLoading(false);
+      }, 50); // Short delay for page-wise loading
+
+      return () => clearTimeout(pageLoadTimer);
+    }
+  }, [pathname, searchParams]);
+
   return (
     <>
-      {loading && <PageLoader />}
-      {!loading && children}
-      {!loading && <ChatWidget />}
+      {(initialLoading || pageLoading) && <PageLoader />}
+      {!(initialLoading || pageLoading) && children}
+      {!(initialLoading || pageLoading) && <ChatWidget />}
     </>
   );
 }
