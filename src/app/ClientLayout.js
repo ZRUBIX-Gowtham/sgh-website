@@ -1,4 +1,3 @@
-// app/ClientLayout.js
 'use client';
 
 import { useState, useEffect, useRef } from 'react'; // Import useRef
