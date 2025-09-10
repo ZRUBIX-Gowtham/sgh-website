@@ -33,8 +33,8 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Wrap ClientLayout with Suspense */}
-        <Suspense fallback={<div>Loading...</div>}> {/* You can customize this fallback */}
+        {/* <Suspense fallback={<div>Loading...</div>}> */}
+        <Suspense> {/* You can customize this fallback */}
           <ClientLayout>
             {children}
           </ClientLayout>
