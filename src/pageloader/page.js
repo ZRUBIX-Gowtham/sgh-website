@@ -1,12 +1,13 @@
 // components/PageLoader.jsx
 'use client';
 import React from 'react';
+// import v from '../../public/'
 
-const PageLoader = () => { // Removed 'label' prop as it's no longer used
+const PageLoader = () => {
   return (
     <div className="page-loader-fullscreen-video" role="status" aria-live="polite">
       <video
-        src="/Gopi hospitals.mp4" // Corrected path for video in public folder
+        src="/Gopi-hospitals.mp4" // Corrected path for video in public folder
         autoPlay
         loop
         muted
