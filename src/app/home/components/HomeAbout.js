@@ -51,8 +51,8 @@ const LightTokens = () => (
    About (Desktop)
 -------------------------------------------- */
 export const HomeAboutDesktop = () => {
-  const backgroundImage = Welcomeabout
-  const tickIcon = tickicon
+  const backgroundImage = Welcomeabout;
+  const tickIcon = tickicon;
   const aboutUsTitle = 'About Us';
   const welcomeTitle = 'Welcome to Salem Gopi Hospital';
   const hospitalDescription = `Salem Gopi Memorial Hospital was inaugurated on 06-12-1981 in fond remembrance of the beloved brother of Dr. K. Janakiraman, the Chairman. We are one of Salem’s leading multispecialty hospitals, specializing in Diabetology, Nephrology, and Trauma care for over 30 years. We were the first multispecialty hospital in Salem to receive ISO 9001:2001 certification. Our team includes dedicated doctors, dieticians, patient educators, nurses, physiotherapists, and trained professionals committed to competent and compassionate patient care.`;
@@ -65,119 +65,128 @@ export const HomeAboutDesktop = () => {
     'To provide comprehensive, high-quality, and affordable healthcare services to our community, fostering a culture of excellence, innovation, and patient-centered care.';
 
   return (
-    <section className="about-desktop-wrap">
+    <section className="w-full text-[var(--ink)] py-12 px-5">
       <LightTokens />
-      <style jsx>{`
-        .about-desktop-wrap {
-          display: grid;
-          grid-template-columns: 480px 1fr;
-          gap: 36px;
-          align-items: center;
-          max-width: 1300px;
-          margin: 48px auto;
-          padding: 0 22px;
-        }
-        .media {
-          position: relative;
-          height: 570px;
-          border-radius: var(--radius-lg);
-          overflow: hidden;
-          box-shadow: var(--shadow-1);
-          background: linear-gradient(180deg, #ffffff, #f7fbff);
-          border: 1px solid var(--border);
-        }
-        .media :global(img) {
-          object-fit: cover;
-          filter: saturate(1.02) contrast(0.98);
-        }
 
-        /* Experience pill (Desktop) */
-        .experience-pill {
-          position: absolute;
-          right: 18px;
-          bottom: 18px;
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: #ffffff;
-          border: 1px solid var(--border);
-          box-shadow: var(--shadow-2);
-          border-radius: 999px;
-          padding: 10px 14px;
-        }
-        .experience-pill .icon {
-          flex: 0 0 auto;
-          width: 28px;
-          height: 28px;
-          display: grid;
-          place-items: center;
-          background: rgba(18, 185, 129, 0.08);
-          border: 1px solid rgba(18, 185, 129, 0.18);
-          border-radius: 999px;
-        }
-        .experience-pill .icon :global(img) {
-          width: 18px !important;
-          height: 18px !important;
-        }
-        .experience-pill .text {
-          font-size: 13px;
-          font-weight: 800;
-          letter-spacing: 0.01em;
-          color: #111827;
-          white-space: nowrap;
-        }
+      <div
+        className="grid gap-9 items-center max-w-[1300px] mx-auto my-12"
+        // mobile: single column; lg+: fixed 480px column then flexible
+        // grid-cols-1 for mobile, lg:grid-cols-[480px_1fr] for desktop layout
+        style={{ gridTemplateColumns: undefined }}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-9 items-center max-w-[1300px] w-full mx-auto">
+          {/* Media (left column on desktop) */}
+          <div
+            className="relative rounded-[var(--radius-lg)] overflow-hidden bg-gradient-to-b from-white to-[#f7fbff] border hover-lift fade-in"
+            style={{
+              height: '520px',
+              boxShadow: 'var(--shadow-1)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <Image
+              src={backgroundImage}
+              alt="Hospital"
+              fill
+              sizes="(max-width: 1024px) 100vw, 480px"
+              priority
+              className="object-cover saturate-[1.02] contrast-[0.98]"
+            />
 
-        .content { border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: 28px; }
-        .eyebrow {
-          letter-spacing: .02em; color: #1f4e9b; background: rgba(47, 128, 237, .1);
-          border: 1px solid rgba(47, 128, 237, .22);
-          border-radius: 999px; align-items: center; gap: 8px; padding: 6px 10px; font-size: 12px; display: inline-flex;
-        }
-        h2 {
-          margin: 12px 0 10px; font-size: 42px; line-height: 1.08; font-weight: 900; letter-spacing: -0.02em;
-          background: linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 100%);
-          -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .desc { color: var(--muted); line-height: 1.75; font-size: 16px; }
-        .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
-        .vm-card { background: linear-gradient(180deg, #ffffff44, #ffffff44); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-1); }
-        .vm-card h3 { color: #1b4db3; font-size: 18px; margin: 0 0 8px; font-weight: 800; }
-        .vm-card p { color: var(--muted-2); margin: 0; line-height: 1.7; font-size: 15px; }
-        @media (max-width: 1024px) { .about-desktop-wrap { grid-template-columns: 1fr; } .media { height: 480px; } }
-      `}</style>
-
-      <div className="media fade-in hover-lift">
-        <Image
-          src={backgroundImage}
-          alt="Hospital"
-          fill
-          sizes="(max-width: 1024px) 100vw, 480px"
-          priority
-          className="about-image"
-        />
-
-        {/* Horizontal icon + text pill */}
-        <div className="experience-pill">
-          <div className="icon">
-            <Image src={tickIcon} alt="Quality" width={18} height={18} />
+            {/* Experience pill (Desktop) */}
+            <div
+              className="inline-flex items-center gap-2 bg-white rounded-full p-3"
+              style={{
+                position: 'absolute',
+                right: '18px',
+                bottom: '18px',
+                border: '1px solid var(--border)',
+                boxShadow: 'var(--shadow-2)',
+              }}
+              aria-hidden={false}
+            >
+              <div
+                className="grid place-items-center rounded-full"
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  background: 'rgba(18, 185, 129, 0.08)',
+                  border: '1px solid rgba(18, 185, 129, 0.18)',
+                }}
+              >
+                <Image src={tickIcon} alt="Quality" width={18} height={18} />
+              </div>
+              <div className="text-[13px] font-extrabold tracking-[0.01em] text-[#111827] whitespace-nowrap">
+                30+ Years Of Experience
+              </div>
+            </div>
           </div>
-          <div className="text">30+ Years Of Experience</div>
-        </div>
-      </div>
 
-      <div className="content fade-in-up">
-        <div className="eyebrow"> {aboutUsTitle} </div>
-        <h2>{welcomeTitle}</h2>
-        <p className="desc">{hospitalDescription}</p>
+          {/* Content (right column on desktop) */}
+          <div
+            className="fade-in-up"
+            style={{
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-1)',
+              padding: '28px',
+              background: 'white',
+            }}
+          >
+            {/* Eyebrow / pill - using the exact class you provided */}
+            <div className="inline-flex items-center gap-2 px-3 py-2 font-bold rounded-full text-xs tracking-wide bg-[rgba(47,128,237,0.10)] text-[#1f4e9b] border border-[rgba(47,128,237,0.22)] self-start">
+              {aboutUsTitle}
+            </div>
 
-        <div className="vm-grid">
-          <div className="vm-card hover-lift">
-            <h3>{visionTitle}</h3>
-            <p>{visionDescription}</p>
-          </div>
-          <div className="vm-card hover-lift">
-            <h3>{missionTitle}</h3>
-            <p>{missionDescription}</p>
+            {/* Heading - using exact class + inline gradient style you requested */}
+            <h2
+              className="font-extrabold leading-[1.08] tracking-[-0.02em] self-stretch text-left mt-3"
+              style={{
+                backgroundImage: 'linear-gradient(92deg, #0b1324 0%, #274760 00%, #2f80ed 80%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                fontSize: 'clamp(28px, 4vw, 44px)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {welcomeTitle}
+            </h2>
+
+            <p className="mt-3 text-[var(--muted)] leading-[1.75] text-[16px]">
+              {hospitalDescription}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div
+                className="hover-lift"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.27), rgba(255,255,255,0.27))',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '18px',
+                  boxShadow: 'var(--shadow-1)',
+                }}
+              >
+                <h3 className="text-[#1b4db3] text-[18px] font-extrabold mb-2">{visionTitle}</h3>
+                <p className="text-[var(--muted-2)] text-[15px] leading-[1.7] m-0">{visionDescription}</p>
+              </div>
+
+              <div
+                className="hover-lift"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.27), rgba(255,255,255,0.27))',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '18px',
+                  boxShadow: 'var(--shadow-1)',
+                }}
+              >
+                <h3 className="text-[#1b4db3] text-[18px] font-extrabold mb-2">{missionTitle}</h3>
+                <p className="text-[var(--muted-2)] text-[15px] leading-[1.7] m-0">{missionDescription}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -189,114 +198,130 @@ export const HomeAboutDesktop = () => {
    About (Mobile)
 -------------------------------------------- */
 export const HomeAboutMobile = () => {
-  const backgroundImage = Welcomeabout
-  const tickIcon = tickicon
+  const backgroundImage = Welcomeabout;
+  const tickIcon = tickicon;
   const aboutUsTitle = 'About Us';
   const welcomeTitle = 'Welcome to Salem Gopi Hospital';
   const hospitalDescription = `Salem Gopi Memorial Hospital, established in 1981, is a leading multispecialty center in Salem with strengths in Diabetology, Nephrology, and Trauma care. We are committed to quality, empathy, and continuous improvement in patient care.`;
 
   return (
-    <section className="about-mobile-wrap">
+    <section className="w-full">
       <LightTokens />
-      <style jsx>{`
-        .about-mobile-wrap {
-          display: grid; gap: 16px; max-width: 780px; margin: 24px auto 36px; padding: 0 16px;
-        }
-        .media {
-          position: relative; height: 460px; width: 100%; border-radius: var(--radius-lg);
-          overflow: hidden; box-shadow: var(--shadow-1); border: 1px solid var(--border);
-          background: linear-gradient(180deg, #ffffff, #f7fbff);
-        }
-        .media :global(img) { object-fit: cover; filter: saturate(1.02) contrast(0.98); }
 
-        /* Experience pill (Mobile) */
-        .experience-pill {
-          position: absolute;
-          left: 14px;
-          bottom: 14px;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #ffffff;
-          border: 1px solid var(--border);
-          box-shadow: var(--shadow-2);
-          border-radius: 999px;
-          padding: 8px 12px;
-        }
-        .experience-pill .icon {
-          flex: 0 0 auto;
-          width: 26px;
-          height: 26px;
-          display: grid;
-          place-items: center;
-          background: rgba(18, 185, 129, 0.08);
-          border: 1px solid rgba(18, 185, 129, 0.18);
-          border-radius: 999px;
-        }
-        .experience-pill .icon :global(img) {
-          width: 16px !important;
-          height: 16px !important;
-        }
-        .experience-pill .text {
-          font-size: 12.5px;
-          font-weight: 800;
-          letter-spacing: 0.01em;
-          color: #111827;
-          white-space: nowrap;
-        }
+      <div className="max-w-[780px] mx-auto my-6 px-4 grid gap-4">
+        <div
+          className="relative rounded-[var(--radius-lg)] overflow-hidden bg-gradient-to-b from-white to-[#f7fbff] border hover-lift fade-in"
+          style={{
+            height: '460px',
+            boxShadow: 'var(--shadow-1)',
+            border: '1px solid var(--border)',
+          }}
+        >
+          <Image
+            src={backgroundImage}
+            alt="Hospital"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover saturate-[1.02] contrast-[0.98]"
+          />
 
-        .content {
-          text-align: center; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
-          box-shadow: var(--shadow-1); padding: 18px 16px 22px;
-        }
-        .eyebrow {
-          letter-spacing: .02em; color: #1f4e9b; background: rgba(47, 128, 237, .1);
-          border: 1px solid rgba(47, 128, 237, .22);
-          border-radius: 999px; align-items: center; gap: 8px; padding: 6px 10px; font-size: 12px; display: inline-flex;
-        }
-        h2 {
-          margin: 10px 0 8px; font-size: 28px; line-height: 1.15; font-weight: 900; letter-spacing: -0.01em;
-          background: linear-gradient(92deg, #0b1324, #274760, #2f80ed); -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .desc { color: var(--muted); line-height: 1.7; font-size: 14.5px; }
-        .vm-col { display: grid; gap: 12px; margin-top: 14px; text-align: left; }
-        .vm-card { background: linear-gradient(180deg, #ffffff, #fbfdff); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-1); }
-        .vm-card h3 { color: #1b4db3; font-size: 16px; margin: 0 0 6px; font-weight: 800; }
-        .vm-card p { color: var(--muted-2); margin: 0; line-height: 1.6; font-size: 14px; }
-      `}</style>
-
-      <div className="media fade-in hover-lift">
-        <Image
-          src={backgroundImage}
-          alt="Hospital"
-          fill
-          sizes="100vw"
-          priority
-          className="about-image"
-        />
-
-        {/* Horizontal icon + text pill */}
-        <div className="experience-pill">
-          <div className="icon">
-            <Image src={tickIcon} alt="Quality" width={16} height={16} />
+          {/* Experience pill (Mobile) positioned left bottom */}
+          <div
+            className="inline-flex items-center gap-2 bg-white rounded-full p-2.5"
+            style={{
+              position: 'absolute',
+              left: '14px',
+              bottom: '14px',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-2)',
+            }}
+          >
+            <div
+              className="grid place-items-center rounded-full"
+              style={{
+                width: '26px',
+                height: '26px',
+                background: 'rgba(18, 185, 129, 0.08)',
+                border: '1px solid rgba(18, 185, 129, 0.18)',
+              }}
+            >
+              <Image src={tickIcon} alt="Quality" width={16} height={16} />
+            </div>
+            <div className="text-[12.5px] font-extrabold tracking-[0.01em] text-[#111827] whitespace-nowrap">
+              30+ Years Of Experience
+            </div>
           </div>
-          <div className="text">30+ Years Of Experience</div>
         </div>
-      </div>
 
-      <div className="content fade-in-up">
-        <div className="eyebrow">{aboutUsTitle}</div>
-        <h2>{welcomeTitle}</h2>
-        <p className="desc">{hospitalDescription}</p>
-
-        <div className="vm-col">
-          <div className="vm-card hover-lift">
-            <h3>Our Vision</h3>
-            <p>To lead with compassionate care, modern technology, and a steadfast commitment to patient well-being.</p>
+        <div
+          className="fade-in-up"
+          style={{
+            textAlign: 'center',
+            background: '#fff',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-1)',
+            padding: '18px 16px 22px',
+          }}
+        >
+          {/* Eyebrow / pill - using the exact class you provided */}
+          <div className="inline-flex items-center gap-2 px-3 py-2 font-bold rounded-full text-xs tracking-wide bg-[rgba(47,128,237,0.10)] text-[#1f4e9b] border border-[rgba(47,128,237,0.22)] self-start">
+            {aboutUsTitle}
           </div>
-          <div className="vm-card hover-lift">
-            <h3>Our Mission</h3>
-            <p>To deliver comprehensive, high-quality, and affordable care powered by excellence, innovation, and patient-first values.</p>
+
+          {/* Heading - using exact class + inline gradient style you requested */}
+          <h2
+            className="font-extrabold leading-[1.08] tracking-[-0.02em] self-stretch text-left mt-3 mx-auto"
+            style={{
+              backgroundImage: 'linear-gradient(92deg, #0b1324 0%, #274760 00%, #2f80ed 80%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+              fontSize: 'clamp(28px, 4vw, 44px)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {welcomeTitle}
+          </h2>
+
+          <p className="mt-2 text-[var(--muted)] leading-[1.7] text-[14.5px]">
+            {hospitalDescription}
+          </p>
+
+          <div className="grid gap-3 mt-3 text-left">
+            <div
+              className="hover-lift"
+              style={{
+                background: 'linear-gradient(180deg, #ffffff, #fbfdff)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '14px',
+                boxShadow: 'var(--shadow-1)',
+              }}
+            >
+              <h3 className="text-[#1b4db3] text-[16px] font-extrabold mb-1">Our Vision</h3>
+              <p className="text-[var(--muted-2)] text-[14px] leading-[1.6] m-0">
+                To lead with compassionate care, modern technology, and a steadfast commitment to patient well-being.
+              </p>
+            </div>
+
+            <div
+              className="hover-lift"
+              style={{
+                background: 'linear-gradient(180deg, #ffffff, #fbfdff)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '14px',
+                boxShadow: 'var(--shadow-1)',
+              }}
+            >
+              <h3 className="text-[#1b4db3] text-[16px] font-extrabold mb-1">Our Mission</h3>
+              <p className="text-[var(--muted-2)] text-[14px] leading-[1.6] m-0">
+                To deliver comprehensive, high-quality, and affordable care powered by excellence, innovation, and patient-first values.
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -40,262 +40,113 @@ function CommonFooter() {
 
   return (
     <>
-      <style>
-        {`
-          :root {
-              --primary: #2563eb;
-              --primary-dark: #1e40af;
-              --secondary: #1e293b;
-              --accent: #06b6d4;
-              --accent-light: #a5f3fc;
-              --light: #f8fafc;
-              --dark: #1e293b;
-              --gray: #64748b;
-              --light-gray: #e2e8f0;
-              --salem: #10b981;
-              --salem-light: #d1fae5;
-          }
-          
-          /* Scoped universal reset for footer elements */
-          .app-footer-container * { /* Renamed */
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-          }
-          
-          
-          /* New wrapper class for footer-specific body styles */
-          .app-footer-wrapper { /* Renamed */
-              color: var(--dark);
-              line-height: 1.6;
-              background-color: #f9fafb; /* This might be overridden by parent body styles */
-          }
-          
-          .app-footer-inner-container { /* Renamed */
-              max-width: 1200px;
-              margin: 0 auto;
-              padding: 0 20px;
-          }
-          
-          /* Footer */
-          .app-footer-container { /* Renamed */
-              background: var(--secondary);
-              color: white;
-              padding: 80px 0 30px;
-              position: relative;
-          }
-          
-          .app-footer-wave { /* Renamed */
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              overflow: hidden;
-              line-height: 0;
-          }
-          
-          .app-footer-wave svg { /* Renamed */
-              position: relative;
-              display: block;
-              width: calc(100% + 1.3px);
-              height: 50px;
-          }
-          
-          .app-footer-wave .shape-fill { /* Renamed */
-              fill: #FFFFFF;
-          }
-          
-          .app-footer-content { /* Renamed */
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-              gap: 40px;
-              margin-bottom: 60px;
-          }
-          
-          .app-footer-column h3 { /* Renamed */
-              font-size: 1.125rem;
-              margin-bottom: 25px;
-              color: #fff;
-              position: relative;
-              padding-bottom: 10px;
-          }
-          
-          .app-footer-column h3:after { /* Renamed */
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              width: 40px;
-              height: 2px;
-              background: #fff;
-          }
-          
-          .app-footer-column ul { /* Renamed */
-              list-style: none;
-          }
-          
-          .app-footer-column ul li { /* Renamed */
-              margin-bottom: 15px;
-          }
-          
-          .app-footer-column ul li a { /* Renamed */
-              color: rgba(255, 255, 255, 0.8);
-              text-decoration: none;
-              transition: all 0.3s ease;
-              display: flex;
-              align-items: center;
-              gap: 10px;
-          }
-          
-          .app-footer-column ul li a:hover { /* Renamed */
-              color: white;
-              transform: translateX(5px);
-          }
-          
-          .app-footer-column ul li a i { /* Renamed */
-              font-size: 14px;
-              font-family: "Font Awesome 5 Free"; /* For solid/regular icons */
-              font-weight: 900; /* For solid icons */
-          }
+      <div className="bg-slate-800 text-white">
+        {/* Wave */}
+        <div className="absolute w-full overflow-hidden leading-none h-12 pointer-events-none">
+          <svg
+            data-name="Layer 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            className="block w-full h-full"
+          >
+            <path
+              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+              className="fill-white"
+            />
+          </svg>
+        </div>
 
-          /* Specific for brand icons */
-          .app-footer-column .app-social-links a i { /* Renamed */
-              font-family: "Font Awesome 5 Brands"; /* For brand icons */
-              font-weight: 400; /* For brand icons */
-          }
-          
-          .app-footer-column .app-social-links { /* Renamed */
-              display: flex;
-              gap: 15px;
-              margin-top: 20px;
-          }
-          
-          .app-footer-column .app-social-links a { /* Renamed */
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 40px;
-              height: 40px;
-              background: rgba(255, 255, 255, 0.1);
-              border-radius: 50%;
-              color: white;
-              transition: all 0.3s ease;
-          }
-          
-          .app-footer-column .app-social-links a:hover { /* Renamed */
-              background:#007bff;
-              transform: translateY(-3px);
-          }
-          
-          .app-footer-copyright { /* Renamed */
-              text-align: center;
-              padding-top: 30px;
-              border-top: 1px solid rgba(255, 255, 255, 0.1);
-              color: rgba(255, 255, 255, 0.6);
-              font-size: 0.875rem;
-          }
-          
-          .app-footer-copyright p { /* Renamed */
-              margin-bottom: 10px;
-          }
-          
-          .app-footer-copyright .app-highlight { /* Renamed */
-              color: #fff;
-              font-weight: 600;
-          }
-          
-          /* Responsive */
-          @media (max-width: 768px) {
-              .app-footer-content { /* Renamed */
-                  grid-template-columns: 1fr;
-                  text-align: center;
-              }
-              .app-footer-column h3:after { /* Renamed */
-                  left: 50%;
-                  transform: translateX(-50%);
-              }
-              .app-footer-column ul { /* Renamed */
-                  padding-left: 0;
-              }
-              .app-footer-column ul li a { /* Renamed */
-                  justify-content: center;
-              }
-              .app-footer-column .app-social-links { /* Renamed */
-                  justify-content: center;
-              }
-          }
-        `}
-      </style>
-      <div className="app-footer-wrapper"> {/* Renamed */}
-        <footer className="app-footer-container"> {/* Renamed */}
-          <div className="app-footer-wave"> {/* Renamed */}
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="shape-fill"></path>
-            </svg>
-          </div>
-          <div className="app-footer-inner-container"> {/* Renamed */}
-            <div className="app-footer-content"> {/* Renamed */}
-              <div className="app-footer-column"> {/* Renamed */}
-                <h3>Common</h3>
-                <ul>
-                  {appFooterData.mainLinks.map((link, index) => ( // Renamed
+        <footer className="relative pt-20 pb-8">
+          <div className="max-w-[1200px] mx-auto px-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mb-16">
+              <div>
+                <h3 className="text-lg text-white font-semibold mb-3">Common</h3>
+                <div className="w-10 h-[2px] bg-white mb-4"></div>
+                <ul className="space-y-4">
+                  {appFooterData.mainLinks.map((link, index) => (
                     <li key={index}>
-                      <a href={link.path}>
-                        <i className={link.iconClass}></i> {link.label}
+                      <a
+                        href={link.path}
+                        className="text-white/80 hover:text-white transition-transform transform hover:translate-x-1 inline-flex items-center gap-3"
+                      >
+                        <i className={link.iconClass} aria-hidden="true"></i>
+                        <span>{link.label}</span>
                       </a>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="app-footer-column"> {/* Renamed */}
-                <h3>Common</h3>
-                <ul>
-                  {appFooterData.companyInfoLinks.map((link, index) => ( // Renamed
+
+              <div>
+                <h3 className="text-lg text-white font-semibold mb-3">Common</h3>
+                <div className="w-10 h-[2px] bg-white mb-4"></div>
+                <ul className="space-y-4">
+                  {appFooterData.companyInfoLinks.map((link, index) => (
                     <li key={index}>
-                      <a href={link.path}>
-                        <i className={link.iconClass}></i> {link.label}
+                      <a
+                        href={link.path}
+                        className="text-white/80 hover:text-white transition-transform transform hover:translate-x-1 inline-flex items-center gap-3"
+                      >
+                        <i className={link.iconClass} aria-hidden="true"></i>
+                        <span>{link.label}</span>
                       </a>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="app-footer-column"> {/* Renamed */}
-                <h3>Resources</h3>
-                <ul>
-                  {appFooterData.resourceLinks.map((link, index) => ( // Renamed
+
+              <div>
+                <h3 className="text-lg text-white font-semibold mb-3">Resources</h3>
+                <div className="w-10 h-[2px] bg-white mb-4"></div>
+                <ul className="space-y-4">
+                  {appFooterData.resourceLinks.map((link, index) => (
                     <li key={index}>
-                      <a href={link.path}>
-                        <i className={link.iconClass}></i> {link.label}
+                      <a
+                        href={link.path}
+                        className="text-white/80 hover:text-white transition-transform transform hover:translate-x-1 inline-flex items-center gap-3"
+                      >
+                        <i className={link.iconClass} aria-hidden="true"></i>
+                        <span>{link.label}</span>
                       </a>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="app-footer-column"> {/* Renamed */}
-                <h3>Contact Us</h3>
-                <ul>
-                  {appFooterData.contactDetails.map((info, index) => ( // Renamed
+
+              <div>
+                <h3 className="text-lg text-white font-semibold mb-3">Contact Us</h3>
+                <div className="w-10 h-[2px] bg-white mb-4"></div>
+                <ul className="space-y-4">
+                  {appFooterData.contactDetails.map((info, index) => (
                     <li key={index}>
-                      <a href={info.linkPath}>
-                        <i className={info.iconClass}></i> {info.infoText}
+                      <a
+                        href={info.linkPath}
+                        className="text-white/80 hover:text-white transition-transform transform hover:translate-x-1 inline-flex items-start gap-3"
+                      >
+                        <i className={info.iconClass} aria-hidden="true"></i>
+                        <span className="text-sm">{info.infoText}</span>
                       </a>
                     </li>
                   ))}
                 </ul>
-                <div className="app-social-links"> {/* Renamed */}
-                  {appFooterData.socialMediaLinks.map((link, index) => ( // Renamed
-                    <a key={index} href={link.linkPath}>
-                      <i className={link.iconClass}></i>
+
+                <div className="flex gap-4 mt-5">
+                  {appFooterData.socialMediaLinks.map((link, index) => (
+                    <a
+                      key={index}
+                      href={link.linkPath}
+                      className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-blue-600 transition-colors"
+                    >
+                      <i className={link.iconClass} aria-hidden="true"></i>
                     </a>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="app-footer-copyright"> {/* Renamed */}
-              <p>&copy; {appFooterData.copyrightInfo.currentYear} {appFooterData.copyrightInfo.companyName}. All rights reserved.</p> {/* Renamed */}
-              {/* <p>From {appFooterData.copyrightInfo.companyName} - {appFooterData.copyrightInfo.sloganOne}</p>
-              <p className="app-highlight">{appFooterData.copyrightInfo.sloganTwo}</p> */}
+
+            <div className="pt-6 border-t border-white/10 text-center text-white/70 text-sm">
+              <p>&copy; {appFooterData.copyrightInfo.currentYear} {appFooterData.copyrightInfo.companyName}. All rights reserved.</p>
             </div>
           </div>
         </footer>

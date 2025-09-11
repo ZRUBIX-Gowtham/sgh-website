@@ -278,7 +278,7 @@ export const DoctorsList = () => {
 
   return (
     <div>
-      <div className="doctors-list-container">
+      <div className="doctors-list-container" id='dfghjk'>
         <h3>Our Doctors</h3>
 
         <div className="sort-and-view-controls">
@@ -329,7 +329,7 @@ export const DoctorsList = () => {
               onClick={() => handleBoxClick(doctor)}
             >
               <div className="doctor-card-image-wrapper">
-                <img src={doctor.image} alt={doctor.name} className="doctor-card-image" />
+                <Image src={doctor.image} alt={doctor.name} className="doctor-card-image" width={400} height={400} />
               </div>
               <a href="#" className="doctor-card-department-button">{doctor.department}</a>
               <div className="doctor-card-content">

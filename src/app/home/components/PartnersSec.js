@@ -11,10 +11,6 @@ import Insurance6 from '../../../../public/HomePageImages/Insurance6.webp';
 import Insurance7 from '../../../../public/HomePageImages/Insurance7.webp';
 import Insurance8 from '../../../../public/HomePageImages/Insurance8.webp';
 
-
-
-
-
 function PartnerSection(props) {
   const {
     title = 'Our Insurance Partners',
@@ -24,202 +20,69 @@ function PartnerSection(props) {
   } = props;
 
   const partnerImages = [
-    Insurance1,Insurance2,Insurance3,Insurance4,Insurance5,Insurance6,Insurance7,,Insurance8
+    Insurance1,
+    Insurance2,
+    Insurance3,
+    Insurance4,
+    Insurance5,
+    Insurance6,
+    Insurance7,
+    Insurance8,
   ];
 
   return (
-    <section className="partners-wrap" aria-labelledby="partners-heading">
-      <style jsx>{`
-        :root {
-          --ink: #0b1324;
-          --muted: #475569;
-          --border: rgba(15, 23, 42, 0.08);
-          --brand: #2f80ed;
-          --chip-bg: rgba(47, 128, 237, 0.08);
-          --chip-border: rgba(47, 128, 237, 0.18);
-          --glow: 0 8px 30px rgba(2, 6, 23, 0.08);
-        }
-
-        .partners-wrap {
-          position: relative;
-          width: 100%;
-          padding: 64px 20px;
-          color: var(--ink);
-        }
-
-        .partners-container {
-          margin: 0 auto;
-          width: min(1200px, 92vw);
-          text-align: center;
-        }
-
-        /* Pills */
-        .partners-pills {
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
-          justify-content: center;
-          margin-bottom: 14px;
-        }
-        .partners-pill {
-          letter-spacing: .02em;
-    color: #1f4e9b;
-    background: rgba(47, 128, 237, .1);
-    border: 1px solid rgba(47, 128, 237, .22);
-    border-radius: 999px;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    font-size: 12px;
-    display: inline-flex
-;
-        }
-
-        /* Heading + subheading */
-        h2.partners-heading {
-          margin: 0 0 10px;
-          font-size: 36px;
-          line-height: 1.1;
-          font-weight: 900;
-          letter-spacing: -0.02em;
-          text-align: center;
-          background: linear-gradient(92deg, #0b1324 0%, #274760 40%, #2f80ed 80%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-        }
-        p.partners-subtitle {
-          margin: 8px auto 28px;
-          max-width: 760px;
-          text-align: center;
-          color: var(--muted);
-          line-height: 1.7;
-          font-size: 16px;
-        }
-
-        /* Card wrapper */
-        .partners-card {
-         
-          border-radius: 16px;
-          padding: 22px;
-        }
-
-        /* Grid layout */
-        .partners-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 18px;
-        }
-        .partner-item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px;
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          background: #ffffff;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .partner-item:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(2, 6, 23, 0.06);
-        }
-
-        /* Scroll (carousel-like) layout */
-        .partners-scroll {
-          display: flex;
-          gap: 14px;
-          overflow-x: auto;
-          padding-bottom: 4px;
-          scroll-snap-type: x mandatory;
-          scrollbar-width: thin;
-        }
-        .partners-scroll::-webkit-scrollbar {
-          height: 8px;
-        }
-        .partners-scroll::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.15);
-          border-radius: 999px;
-        }
-        .partner-chip {
-          flex: 0 0 auto;
-          width: 180px;
-          height: 120px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          background: #ffffff;
-          scroll-snap-align: center;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .partner-chip:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(2, 6, 23, 0.06);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-          .partners-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        @media (max-width: 820px) {
-          .partners-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          h2.partners-heading {
-            font-size: 32px;
-          }
-        }
-        @media (max-width: 560px) {
-          .partners-wrap {
-            padding: 48px 16px;
-          }
-          h2.partners-heading {
-            font-size: 28px;
-          }
-          p.partners-subtitle {
-            font-size: 15px;
-          }
-          .partners-card {
-            padding: 16px;
-          }
-          .partners-grid {
-            grid-template-columns: 1fr; /* single column on small phones */
-          }
-          .partner-chip {
-            width: 160px;
-            height: 110px;
-          }
-        }
-      `}</style>
-
-      <div className="partners-container">
+    <section className="w-full text-[#0b1324] py-16 px-5" aria-labelledby="partners-heading">
+      <div className="max-w-[1200px] w-[92vw] mx-auto text-center">
         {/* Pills */}
-        <div className="partners-pills" aria-label="Highlights">
+        <div className="flex gap-2 flex-wrap justify-center mb-3" aria-label="Highlights">
           {pills.map((pill, idx) => (
-            <span className="partners-pill" key={idx}>
+            <span
+              key={idx}
+              className="inline-flex items-center gap-2 px-3 py-2 font-bold rounded-full text-xs tracking-wide bg-[rgba(47,128,237,0.10)] text-[#1f4e9b] border border-[rgba(47,128,237,0.22)] self-start"
+            >
               {pill}
             </span>
           ))}
         </div>
 
-        {/* Heading + Subtitle */}
-        <h2 id="partners-heading" className="partners-heading">
+        {/* Heading */}
+        <h2
+          id="partners-heading"
+          className="font-extrabold leading-[1.08] tracking-[-0.02em] self-stretch text-center mx-auto"
+          style={{
+            backgroundImage: 'linear-gradient(92deg, #0b1324 0%, #274760 00%, #2f80ed 80%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            color: 'transparent',
+            fontSize: 'clamp(28px, 4vw, 44px)',
+            letterSpacing: '-0.02em',
+            maxWidth: 'min(1200px, 92vw)',
+          }}
+        >
           {title}
         </h2>
-        <p className="partners-subtitle">{subtitle}</p>
+
+        {/* Subtitle */}
+        <p className="mt-2 mb-7 max-w-[760px] mx-auto text-center text-[#475569] leading-7 text-base">
+          {subtitle}
+        </p>
 
         {/* Content card */}
-        <div className="partners-card" role="region" aria-label="Insurance partner logos">
+        <div
+          className="bg-white rounded-2xl p-6"
+          role="region"
+          aria-label="Insurance partner logos"
+        >
           {layout === 'grid' ? (
-            <div className="partners-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
               {partnerImages.map((src, index) => (
-                <div className="partner-item" key={index} aria-label={`Partner ${index + 1}`}>
-                  {/* Next/Image with fixed box to preserve aspect ratio and avoid layout shift */}
-                  <div style={{ position: 'relative', width: '200px', height: '120px' }}>
+                <div
+                  className="flex items-center justify-center p-4 border rounded-lg bg-white transition-transform duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_10px_20px_rgba(2,6,23,0.06)] border-[rgba(15,23,42,0.08)]"
+                  key={index}
+                  aria-label={`Partner ${index + 1}`}
+                >
+                  <div className="relative w-[200px] h-[120px]">
                     <Image
                       src={src}
                       alt={`Insurance partner logo ${index + 1}`}
@@ -232,10 +95,17 @@ function PartnerSection(props) {
               ))}
             </div>
           ) : (
-            <div className="partners-scroll" aria-label="Scrollable list of partners">
+            <div
+              className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-thin"
+              aria-label="Scrollable list of partners"
+            >
               {partnerImages.map((src, index) => (
-                <div className="partner-chip" key={index} aria-label={`Partner ${index + 1}`}>
-                  <div style={{ position: 'relative', width: '140px', height: '80px' }}>
+                <div
+                  className="flex-shrink-0 w-[180px] h-[120px] flex items-center justify-center border rounded-lg bg-white transition-transform duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_10px_20px_rgba(2,6,23,0.06)] border-[rgba(15,23,42,0.08)] snap-center"
+                  key={index}
+                  aria-label={`Partner ${index + 1}`}
+                >
+                  <div className="relative w-[140px] h-[80px]">
                     <Image
                       src={src}
                       alt={`Insurance partner logo ${index + 1}`}

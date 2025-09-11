@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic'; // Import dynamic from next/dynamic
 
 import HeroSection from './components/HeroSection';
-import { BookNowMobile, BookNow } from './components/BookNow';
+import { BookNowMobile, BookNow } from './not-used-components/BookNow';
 import { HomeAboutMobile, HomeAboutDesktop } from './components/HomeAbout';
 import { BookSection } from './components/BookSection';
 import Map from './components/Map';
@@ -16,9 +16,9 @@ import CommonFooter from '../common-components/footer/page';
 // Dynamically import components that cause hydration issues with SSR disabled
 const DynamicDepartmentSection = dynamic(() => import('./components/DepartmentSection').then(mod => mod.DepartmentSection), { ssr: false });
 const DynamicServicesVariantC = dynamic(() => import('./components/Services'), { ssr: false });
-const DynamicExpertiseSection = dynamic(() => import('./components/Expertise').then(mod => mod.ExpertiseSection), { ssr: false });
-const DynamicExpertiseSectionMobile = dynamic(() => import('./components/Expertise').then(mod => mod.ExpertiseSectionMobile), { ssr: false });
-const DynamicMediaPanels = dynamic(() => import('./components/MediaPanels').then(mod => mod.MediaPanels), { ssr: false });
+const DynamicExpertiseSection = dynamic(() => import('./not-used-components/Expertise').then(mod => mod.ExpertiseSection), { ssr: false });
+const DynamicExpertiseSectionMobile = dynamic(() => import('./not-used-components/Expertise').then(mod => mod.ExpertiseSectionMobile), { ssr: false });
+const DynamicMediaPanels = dynamic(() => import('./not-used-components/MediaPanels').then(mod => mod.MediaPanels), { ssr: false });
 
 
 function HomePage() {
