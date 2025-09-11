@@ -17,7 +17,7 @@ export default function ClientLayout({ children }) {
       const initialLoadTimer = setTimeout(() => {
         setInitialLoading(false);
         isInitialMount.current = false;
-      }, 50); // Initial load delay
+      }, 200); // Initial load delay
 
       return () => clearTimeout(initialLoadTimer);
     }
@@ -28,7 +28,7 @@ export default function ClientLayout({ children }) {
       setPageLoading(true);
       const pageLoadTimer = setTimeout(() => {
         setPageLoading(false);
-      }, 50); // Short delay for page-wise loading
+      }, 100); // Short delay for page-wise loading
 
       return () => clearTimeout(pageLoadTimer);
     }

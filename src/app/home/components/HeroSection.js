@@ -228,9 +228,9 @@ export function HeroSection() {
             {heroData.heroContent.description}
           </p>
 
-          <div className="cta-row flex flex-wrap gap-3 mt-2" role="group" aria-label="Primary actions">
+          <div className="cta-row flex flex-wrap gap-3 mt-2 " role="group" aria-label="Primary actions">
             <button
-              className="inline-flex items-center gap-3 px-6 py-2 rounded-md font-bold bg-[#2f80ed] text-white shadow hover:shadow-md transition"
+              className="inline-flex items-center gap-3 px-6 py-2 rounded-md font-bold bg-[#2f80ed] text-white shadow hover:shadow-xl transition cursor-pointer"
               onClick={() => setShowModal(true)}
             >
               <i className="fa-solid fa-calendar-check" />
@@ -299,10 +299,10 @@ export function HeroSection() {
 
       {/* Booking modal: overlay z-index = 4 (z-[4]) and modal content z-[5] */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000]">
-          <div className="relative bg-white p-8 rounded-lg w-[90%] max-w-[500px] shadow-lg z-[5]">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] ">
+          <div className="relative bg-white p-8 rounded-lg w-[90%] max-w-[500px] shadow-lg z-[5] ">
             <button
-              className="absolute top-4 right-4 bg-transparent border-0 text-2xl cursor-pointer text-[#555]"
+              className="absolute top-4 right-4 bg-transparent border-0 text-2xl cursor-pointer text-[#555] shadow hover:shadow-xl"
               onClick={() => setShowModal(false)}
             >
               {'\u00D7'}
@@ -369,7 +369,7 @@ export function HeroSection() {
               </div>
 
               <div className="mb-4 text-left">
-                <label htmlFor="message" className="block mb-2 font-bold text-[#333]">Your Message (Optional):</label>
+                <label htmlFor="message" className="block mb-2 font-bold text-[#333] ">Your Message (Optional):</label>
                 <textarea
                   id="message"
                   name="message"
